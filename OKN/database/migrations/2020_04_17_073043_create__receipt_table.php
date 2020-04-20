@@ -13,15 +13,18 @@ class CreateReceiptTable extends Migration
      */
     public function up()
     {
-        Schema::table('Receipts', function (Blueprint $table) {
+        Schema::create('Receipts', function (Blueprint $table) {
             //
             $table->id();
             $table->date('purchase');
             $table->integer('amount');
-            $table->string('memo');
-            $table->foreignID('genre_id')->constrained();
-            $table->foreignID('store_id')->constrained()->nullable()->onDelete('set null');
-            $table->foreignID('payment_id')->constrained()->nullable()->onDelete('set null');
+            $table->string('memo')->nullable();
+            $table->unsignedBigInteger('genre_id');
+            $table->foreign('genre_id')->references('id')->on('Genres');
+            $table->unsignedBigInteger('store_id')->nullable();
+            $table->foreign('store_id')->references('id')->on('Stores')->onDelete('set null');
+            $table->unsignedBigInteger('payment_id')->nullable();
+            $table->foreign('payment_id')->references('id')->on('Payments')->onDelete('set null');
             $table->timestamps();
         });
     }

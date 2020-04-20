@@ -16,7 +16,7 @@ class CreateIncomeGenresTable extends Migration
         Schema::create('IncomeGenres', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('memo');
+            $table->string('memo')->nullable();
             $table->timestamps();
         });
     }

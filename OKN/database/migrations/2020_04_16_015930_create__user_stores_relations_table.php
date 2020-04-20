@@ -14,8 +14,10 @@ class CreateUserStoresRelationsTable extends Migration
     public function up()
     {
         Schema::create('UserStoresRelations', function (Blueprint $table) {
-          $table->foreignID('user_id')->constrained()->onDelete('cascade');
-          $table->foreignID('store_id')->constrained()->onDelete('cascade');
+          $table->unsignedBigInteger('user_id');
+          $table->unsignedBigInteger('store_id');
+          $table->foreign('user_id')->references('id')->on('Users')->onDelete('cascade');
+          $table->foreign('store_id')->references('id')->on('Stores')->onDelete('cascade');
         });
     }
 

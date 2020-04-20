@@ -14,8 +14,10 @@ class CreateUserIncomeRelationsTable extends Migration
     public function up()
     {
         Schema::create('UserIncomeRelations', function (Blueprint $table) {
-          $table->foreignID('user_id')->constrained()->onDelete('cascade');
-          $table->foreignID('income_id')->constrained()->onDelete('cascade');
+          $table->unsignedBigInteger('user_id');
+          $table->unsignedBigInteger('income_id');
+          $table->foreign('user_id')->references('id')->on('Users')->onDelete('cascade');
+          $table->foreign('income_id')->references('id')->on('Incomes')->onDelete('cascade');
         });
     }
 

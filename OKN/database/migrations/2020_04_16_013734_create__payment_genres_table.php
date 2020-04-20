@@ -13,11 +13,11 @@ class CreatePaymentGenresTable extends Migration
      */
     public function up()
     {
-        Schema::table('PaymentGenres', function (Blueprint $table) {
+        Schema::create('PaymentGenres', function (Blueprint $table) {
             //
             $table->id();
             $table->string('name');
-            $table->string('memo');
+            $table->string('memo')->nullable();
             $table->timestamps();
         });
     }

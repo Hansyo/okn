@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePaymentTable extends Migration
+class CreatePaymentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,15 @@ class CreatePaymentTable extends Migration
      */
     public function up()
     {
-        Schema::table('Payments', function (Blueprint $table) {
+        Schema::create('Payments', function (Blueprint $table) {
             //
             $table->id();
             $table->string('name');
-            $table->string('memo');
-            $table->foreignID('paymentGenre_id')->constrained()->nullable()->onDelete('set null');
+            $table->string('memo')->nullable();
+            $table->unsignedBigInteger('paymentGenre_id')->nullable();
+            $table->foreign('paymentGenre_id')
+                  ->references('id')->on('PaymentGenres')
+                  ->onDelete('set null');
             $table->timestamps();
         });
     }

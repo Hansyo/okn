@@ -14,8 +14,10 @@ class CreateUserPresetsRelationsTable extends Migration
     public function up()
     {
         Schema::create('UserPresetsRelations', function (Blueprint $table) {
-          $table->foreignID('user_id')->constrained()->onDelete('cascade');
-          $table->foreignID('preset_id')->constrained()->onDelete('cascade');
+          $table->unsignedBigInteger('user_id');
+          $table->unsignedBigInteger('preset_id');
+          $table->foreign('user_id')->references('id')->on('Users')->onDelete('cascade');
+          $table->foreign('preset_id')->references('id')->on('Presets')->onDelete('cascade');
         });
     }
 

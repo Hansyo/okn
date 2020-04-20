@@ -14,8 +14,10 @@ class CreateUserPaymentGenresRelationsTable extends Migration
     public function up()
     {
         Schema::create('UserPaymentGenresRelations', function (Blueprint $table) {
-          $table->foreignID('user_id')->constrained()->onDelete('cascade');
-          $table->foreignID('paymentGenre_id')->constrained()->onDelete('cascade');
+          $table->unsignedBigInteger('user_id');
+          $table->unsignedBigInteger('paymentGenre_id');
+          $table->foreign('user_id')->references('id')->on('Users')->onDelete('cascade');
+          $table->foreign('paymentGenre_id')->references('id')->on('PaymentGenres')->onDelete('cascade');
         });
     }
 

@@ -14,8 +14,10 @@ class CreateUserGenresRelationsTable extends Migration
     public function up()
     {
         Schema::create('UserGenresRelations', function (Blueprint $table) {
-          $table->foreignID('user_id')->constrained()->onDelete('cascade');
-          $table->foreignID('genre_id')->constrained()->onDelete('cascade');
+          $table->unsignedBigInteger('user_id');
+          $table->unsignedBigInteger('genre_id');
+          $table->foreign('user_id')->references('id')->on('Users')->onDelete('cascade');
+          $table->foreign('genre_id')->references('id')->on('Genres')->onDelete('cascade');
         });
     }
 

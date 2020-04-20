@@ -17,7 +17,8 @@ class CreateIncomesTable extends Migration
             $table->id();
             $table->integer('price');
             $table->date('date');
-            $table->foreignID('incomeGenre_id')->constrained()->nullable()->onDelete('set null');
+            $table->unsignedBigInteger('incomeGenre_id')->nullable();
+            $table->foreign('incomeGenre_id')->references('id')->on('IncomeGenres')->onDelete('set null');
             $table->timestamps();
         });
     }

@@ -14,8 +14,10 @@ class CreateUserReceiptsRelationsTable extends Migration
     public function up()
     {
         Schema::create('UserReceiptsRelations', function (Blueprint $table) {
-          $table->foreignID('user_id')->constrained()->onDelete('cascade');
-          $table->foreignID('recept_id')->constrained()->onDelete('cascade');
+          $table->unsignedBigInteger('user_id');
+          $table->unsignedBigInteger('recept_id');
+          $table->foreign('user_id')->references('id')->on('Users')->onDelete('cascade');
+          $table->foreign('recept_id')->references('id')->on('Receipts')->onDelete('cascade');
         });
     }
 

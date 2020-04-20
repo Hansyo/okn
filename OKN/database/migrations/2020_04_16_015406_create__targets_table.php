@@ -18,7 +18,7 @@ class CreateTargetsTable extends Migration
             $table->integer('amount');
             $table->date('start');
             $table->date('goal');
-            $table->string('memo');
+            $table->string('memo')->nullable();
             $table->timestamps();
         });
     }
