@@ -10,6 +10,8 @@ class User extends Authenticatable
 {
     use Notifiable;
 
+    protected $table = 'Users';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -36,4 +38,54 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * UserXxxxRelation
+     * To many, many, many and many.
+     */
+    public function genre()
+    {
+        return $this->hasMany('App\Genre');
+    }
+
+    public function store()
+    {
+        return $this->hasMany('App\Store');
+    }
+
+    public function target()
+    {
+        return $this->hasMany('App\Target');
+    }
+
+    public function paymentGenre()
+    {
+        return $this->hasMany('App\PaymentGenre');
+    }
+
+    public function incomeGenre()
+    {
+        return $this->hasMany('App\IncomeGenre');
+    }
+
+    public function receipt()
+    {
+        return $this->hasMany('App\Receipt');
+    }
+
+    public function preset()
+    {
+        return $this->hasMany('App\Preset');
+    }
+
+    public function payment()
+    {
+        return $this->hasMany('App\Payment');
+    }
+
+    public function income()
+    {
+        return $this->hasMany('App\Income');
+    }
+
 }
