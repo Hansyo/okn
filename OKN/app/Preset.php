@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Preset extends Model
 {
+    protected $table = 'Presets';
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
     public function payment()

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Credit extends Model
 {
+    protected $table = 'Credits';
     public function payment()
     {
         return $this->belongsTo('App\Payment');

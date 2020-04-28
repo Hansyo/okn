@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class IncomeGenre extends Model
 {
+    protected $table = 'IncomeGenres';
     //
     protected $guarded = ['id', 'created_at', 'updated_at'];
 

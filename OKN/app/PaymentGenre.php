@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class PaymentGenre extends Model
 {
     //
+    protected $table = 'PaymentGenres';
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
     /**
