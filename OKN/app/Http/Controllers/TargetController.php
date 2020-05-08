@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
+use App\Target;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-class UserController extends Controller
+class TargetController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +16,6 @@ class UserController extends Controller
     public function index()
     {
         //
-        return response(User::all());
     }
 
     /**
@@ -25,8 +25,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        // ユーザー登録画面のビューを返すだけ
-        return view('users.create');
+        //
+        return view('target.create');
     }
 
     /**
@@ -37,63 +37,66 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        // 実際の追加処理を行う
-        //$user = new User;
-        //$user->name = $request->name;
-        //$user->email = $request->email;
-        //$user->password = $request->password;
-        //Log::debug($user);
-        //$user->save();
-        //return redirect('user/'.$user->id);
+        $target = new Target;
+        $user = Auth::user();
+        $target->amount = $request->amount;
+        $target->start = $request->start;
+        $target->goal = $request->goal;
+        $target->memo = $request->memo;
+        $user->target()->save($target);
+        return redirect('targets/'.$target->id);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\User  $user
+     * @param  \App\Target  $target
      * @return \Illuminate\Http\Response
      */
-    public function show(User $user)
+    public function show(Target $target)
     {
         //
-        //return view('user.profile', ['user' => $user]);
-        return $user;
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\User  $user
+     * @param  \App\Target  $target
      * @return \Illuminate\Http\Response
      */
-    public function edit(User $user)
+    public function edit(Target $target)
     {
-        return view('users.edit', ["user"=>$user]);
+        //
+        return view('target.edit');
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\User  $user
+     * @param  \App\Target  $target
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request, Target $target)
     {
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->save();
-        return redirect('user/'.$user->id);
+        //
+        $target->amount = $request->amount;
+        $target->start = $request->start;
+        $target->goal = $request->goal;
+        $target->memo = $request->memo;
+        $target->save();
+        return redirect('targets/'.$target->id);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\User  $user
+     * @param  \App\Target  $target
      * @return \Illuminate\Http\Response
      */
-    public function destroy(User $user)
+    public function destroy(Target $target)
     {
-        $user->delete();
+        //
+        $target->delete();
     }
 }

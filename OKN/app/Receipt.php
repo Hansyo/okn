@@ -22,4 +22,8 @@ class Receipt extends Model
     {
         return $this->belongsTo('App\Payment');
     }
+    public function history()
+    {
+        return $this->belongsTo('App\CreditHistory');
+    }
 }

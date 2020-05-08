@@ -9,6 +9,11 @@ class Genre extends Model
     protected $table = 'Genres';
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
+    public function user()
+    {
+        return $this->belongsToMany('App\User');
+    }
+
     /**
      * 自分の親要素に当たるジャンルを取得
      */
