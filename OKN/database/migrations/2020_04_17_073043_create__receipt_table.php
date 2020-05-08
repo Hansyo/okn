@@ -25,6 +25,10 @@ class CreateReceiptTable extends Migration
             $table->foreign('store_id')->references('id')->on('Stores')->onDelete('set null');
             $table->unsignedBigInteger('payment_id')->nullable();
             $table->foreign('payment_id')->references('id')->on('Payments')->onDelete('set null');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('Users')->onDelete('cascade');
+            $table->unsignedBigInteger('creditHistory_id');
+            $table->foreign('creditHistory_id')->references('id')->on('CreditHistories')->onDelete('cascade');
             $table->timestamps();
         });
     }

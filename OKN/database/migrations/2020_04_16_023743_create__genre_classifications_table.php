@@ -16,8 +16,8 @@ class CreateGenreClassificationsTable extends Migration
         Schema::create('GenreClassifications', function (Blueprint $table) {
           $table->unsignedBigInteger('parent');
           $table->unsignedBigInteger('child');
-          $table->foreign('parent')->references('id')->on('Users')->onDelete('cascade');
-          $table->foreign('child')->references('id')->on('Users')->onDelete('cascade');
+          $table->foreign('parent')->references('id')->on('Genres')->onDelete('cascade');
+          $table->foreign('child')->references('id')->on('Genres')->onDelete('cascade');
         });
     }
 
