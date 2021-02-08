@@ -76,10 +76,11 @@ body {
     height: 50px;
     padding: 0 20px;
     align-items: center;
+    border-bottom: solid 2px rgba(0, 0, 0, 0);
 }
 
 .navi-menu > li:hover {
-    border-bottom: solid 2px black;
+    border-bottom-color: black;
 }
 
 .body-content {
