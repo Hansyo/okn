@@ -35,3 +35,16 @@ Homestead.json
 .phpunit.result.cache
 
 # End of https://www.gitignore.io/api/laravel
+
+### Laravel 8.x ###
+/vendor
+composer.phar
+composer.lock
+.DS_Store
+Thumbs.db
+/phpunit.xml
+/.idea
+/.vscode
+.phpunit.result.cache
+
+# from https://github.com/laravel/framework/blob/8.x/.gitignore

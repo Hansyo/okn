@@ -20,7 +20,7 @@ class CreateIncomesTable extends Migration
             $table->unsignedBigInteger('incomeGenre_id')->nullable();
             $table->foreign('incomeGenre_id')->references('id')->on('IncomeGenres')->onDelete('set null');
             $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('Users')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

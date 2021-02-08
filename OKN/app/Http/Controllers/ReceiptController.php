@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Receipt;
-use App\CreditHistory;
+use App\Models\Receipt;
+use App\Models\CreditHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 

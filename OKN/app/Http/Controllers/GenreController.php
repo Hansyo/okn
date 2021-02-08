@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Genre;
-use App\User;
+use App\Models\Genre;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;

@@ -23,7 +23,7 @@ class CreatePaymentsTable extends Migration
                   ->references('id')->on('PaymentGenres')
                   ->onDelete('set null');
             $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('Users')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

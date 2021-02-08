@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\CreditHistory;
-use App\Credit;
+use App\Models\CreditHistory;
+use App\Models\Credit;
 use Illuminate\Http\Request;
 
 class CreditHistoryController extends Controller

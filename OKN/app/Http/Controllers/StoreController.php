@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Store;
+use App\Models\Store;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
