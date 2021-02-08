@@ -56,8 +56,7 @@
 
     <div class="body">
         <div class="body-content content-center">
-            <div class="body-main">メイン</div>
-            <div class="body-sub">サブ</div>
+            @yield('content')
         </div>
     </div>
 
