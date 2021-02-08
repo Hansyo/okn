@@ -37,4 +37,18 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
     }
+
+    /**
+     * login can be username or email.
+     *
+     * @return string
+     */
+    public function username()
+    {
+
+        $field = (filter_var(request()->email, FILTER_VALIDATE_EMAIL)) ? 'email' : 'name';
+        info($field);
+        request()->merge([$field => request()->email]);
+        return $field;
+    }
 }
