@@ -20,7 +20,7 @@ class CreateTargetsTable extends Migration
             $table->date('goal');
             $table->string('memo')->nullable();
             $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('Users')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

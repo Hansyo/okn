@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\IncomeGenre;
+use App\Models\IncomeGenre;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 

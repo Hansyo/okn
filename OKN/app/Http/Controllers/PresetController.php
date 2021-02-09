@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Preset;
+use App\Models\Preset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
