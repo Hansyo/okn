@@ -9,7 +9,7 @@ class Income extends Model
     protected $table = 'Incomes';
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
-    public function genre()
+    public function incomeGenre()
     {
         return $this->belongsTo('App\Models\IncomeGenre', 'incomeGenre_id');
     }

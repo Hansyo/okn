@@ -9,8 +9,17 @@ class Payment extends Model
     protected $table = 'Payments';
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
-    public function credit()
+    public function paymentGenre(){
+        return $this->belongsTo(PaymentGenre::class);
+    }
+
+    public function credits()
     {
-        return $this->hasMany('App\Models\Credit');
+        return $this->hasOne(Credit::class);
+    }
+
+    public function receipts()
+    {
+        return $this->hasMany(Receipt::class);
     }
 }

@@ -58,4 +58,50 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+
+
+    /***
+     *
+     * 各モデルとの接続情報の記述
+     *
+     * 基本的に(ユーザー)1対多(各モデル)の関係
+     */
+    public function genres()
+    {
+        return $this->hasMany(Genre::class);
+    }
+
+    public function incomes() {
+        return $this->hasMany(Income::class);
+    }
+
+    public function incomeGenres(){
+        return $this->hasMany(IncomeGenre::class);
+    }
+
+    public function payments(){
+        return $this->hasMany(payment::class);
+    }
+
+    public function paymentGenres(){
+        return $this->hasMany(PaymentGenre::class);
+    }
+
+    public function presets(){
+        return $this->hasMany(Preset::class);
+    }
+
+    public function receipts()
+    {
+        return $this->hasMany(Receipt::class);
+    }
+
+    public function stores()
+    {
+        return $this->hasMany(Store::class);
+    }
+
+    public function targets(){
+        return $this->hasMany(Target::class);
+    }
 }

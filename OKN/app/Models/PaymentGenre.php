@@ -15,7 +15,7 @@ class PaymentGenre extends Model
      */
     public function parent()
     {
-        return $this->belongsToMany('App\Models\PaymentGenre', 'PaymentGenreClassifications', 'child', 'parent');
+        return $this->belongsTo('App\Models\PaymentGenre', 'PaymentGenreClassifications', 'child', 'parent');
     }
 
     /**

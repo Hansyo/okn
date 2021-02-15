@@ -9,18 +9,18 @@ class Preset extends Model
     protected $table = 'Presets';
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
-    public function payment()
+    public function genre()
     {
-        return $this->belongsTo('App\Models\Payment');
+        return $this->belongsTo(Genre::class);
     }
 
     public function store()
     {
-        return $this->belongsTo('App\Models\Store');
+        return $this->belongsTo(Store::class);
     }
 
-    public function genre()
+    public function payment()
     {
-        return $this->belongsTo('App\Models\Genre');
+        return $this->belongsTo(Payment::class);
     }
 }

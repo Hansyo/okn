@@ -9,11 +9,11 @@ class Credit extends Model
     protected $table = 'Credits';
     public function payment()
     {
-        return $this->belongsTo('App\Models\Payment');
+        return $this->belongsTo(Payment::class);
     }
 
-    public function history()
+    public function histories()
     {
-        return $this->hasMany('App\Models\CreditHistory');
+        return $this->hasMany(CreditHistory::class);
     }
 }

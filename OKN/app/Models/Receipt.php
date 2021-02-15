@@ -12,18 +12,22 @@ class Receipt extends Model
 
     public function genre()
     {
-        return $this->belongsTo('App\Models\Genre');
+        return $this->belongsTo(Genre::class);
     }
     public function store()
     {
-        return $this->belongsTo('App\Models\Store');
+        return $this->belongsTo(Store::class);
     }
     public function payment()
     {
-        return $this->belongsTo('App\Models\Payment');
+        return $this->belongsTo(Payment::class);
     }
-    public function history()
+    public function user()
     {
-        return $this->belongsTo('App\Models\CreditHistory');
+        return $this->belongsTo(User::class);
+    }
+    public function creditHistory()
+    {
+        return $this->hasOne(CreditHistory::class);
     }
 }
