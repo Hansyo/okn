@@ -22,3 +22,8 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return view('dashboard');
 })->name('dashboard');
 
+
+# 各種コントローラーに対してCRUD処理できるリソースを張る
+Route::resources([
+    'genres' => GenreController::class,
+]);

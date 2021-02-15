@@ -18,7 +18,8 @@ class GenreController extends Controller
     public function index()
     {
         //
-        return Genre::all();
+        //return view('genres.index', ['genres' => Genre::all()]);
+        return Auth::user()->genres()->get();
     }
 
     /**
@@ -44,7 +45,7 @@ class GenreController extends Controller
         $user = Auth::user();
         $genre->name = $request->name;
         $genre->memo = $request->memo;
-        $user->genre()->save($genre);
+        $user->genres()->save($genre);
         if($request->filled('parent')) {
             try{
                 $parent = $user->genre()->findOrFail($request->parent);
@@ -63,6 +64,8 @@ class GenreController extends Controller
     public function show(Genre $genre)
     {
         //
+        if(! Auth::user()->genres()->where('id', '=', $genre->id)->exists())
+            return [];
         return ["genre" => $genre, "parent" => $genre->parent()->get(), "child" => $genre->child()->get()];
     }
 
@@ -91,6 +94,7 @@ class GenreController extends Controller
         $genre->memo = $request->memo;
         if($request->filled('parent')) {
             try{
+                $user = Auth::user();
                 $parent = $user->genre()->findOrFail($request->parent);
                 $parent->child()->attach($genre->id);
             }catch(ModelNotFoundException $e){}
