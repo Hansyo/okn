@@ -19,7 +19,8 @@ class GenreController extends Controller
     {
         //
         //return view('genres.index', ['genres' => Genre::all()]);
-        return Auth::user()->genres()->get();
+        if(!Auth::check()) return redirect('login'); //確認
+        return view('genres.index', ["genres" => Auth::user()->genres()->get()]);
     }
 
     /**
@@ -29,8 +30,8 @@ class GenreController extends Controller
      */
     public function create()
     {
-        //
-        return view('genres.create');
+        if(!Auth::check()) return redirect('login'); //確認
+        return view('genres.create', ['genres' => Auth::user()->genres()->get() ]);
     }
 
     /**
@@ -45,14 +46,9 @@ class GenreController extends Controller
         $user = Auth::user();
         $genre->name = $request->name;
         $genre->memo = $request->memo;
+        $genre->parent = $request->parent;
         $user->genres()->save($genre);
-        if($request->filled('parent')) {
-            try{
-                $parent = $user->genre()->findOrFail($request->parent);
-                $parent->child()->attach($genre->id);
-            }catch(ModelNotFoundException $e){}
-        }
-        return redirect('genres/'.$genre->id);
+        return redirect()->route('genres.show', $genre->id);
     }
 
     /**
@@ -64,9 +60,11 @@ class GenreController extends Controller
     public function show(Genre $genre)
     {
         //
-        if(! Auth::user()->genres()->where('id', '=', $genre->id)->exists())
-            return [];
-        return ["genre" => $genre, "parent" => $genre->parent()->get(), "child" => $genre->child()->get()];
+        if(!Auth::check()) return \App::abort(404);
+        $user = Auth::user();
+        if(! $user->genres()->where('id', '=', $genre->id)->exists())
+            return \App::abort(404);
+        return view('genres.show', ["genre" => $genre, "childs" => $user->genres()->where('parent', $genre->id)->pluck('id')]);
     }
 
     /**
@@ -77,7 +75,7 @@ class GenreController extends Controller
      */
     public function edit(Genre $genre)
     {
-        return view('genres.edit', ["genre" => $genre]);
+        return view('genres.edit', ["genre" => $genre, "genres" => Auth::user()->genres()->get()]);
     }
 
     /**
@@ -89,13 +87,13 @@ class GenreController extends Controller
      */
     public function update(Request $request, Genre $genre)
     {
-        //
+        // 処理が間違ってる
         $genre->name = $request->name;
         $genre->memo = $request->memo;
         if($request->filled('parent')) {
             try{
                 $user = Auth::user();
-                $parent = $user->genre()->findOrFail($request->parent);
+                $parent = $user->genres()->findOrFail($request->parent);
                 $parent->child()->attach($genre->id);
             }catch(ModelNotFoundException $e){}
         }
@@ -113,5 +111,6 @@ class GenreController extends Controller
     {
         //
         $genre->delete();
+        return redirect('genres');
     }
 }
