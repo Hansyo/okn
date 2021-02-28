@@ -16,6 +16,8 @@ class StoreController extends Controller
     public function index()
     {
         //
+        if(!Auth::check()) return redirect('login'); //確認
+        return view('stores.index', ["stores" => Auth::user()->stores()->get()]);
     }
 
     /**
@@ -26,7 +28,8 @@ class StoreController extends Controller
     public function create()
     {
         //
-        return view('store.create');
+        if(!Auth::check()) return redirect('login'); //確認
+        return view('stores.create', ['stores' => Auth::user()->stores()->get() , 'genres' => Auth::user()->genres()->get()]);
     }
 
     /**
@@ -42,14 +45,10 @@ class StoreController extends Controller
         $user = Auth::user();
         $store->name = $request->name;
         $store->memo = $request->memo;
-        $user->store()->save($store);
-        if($request->filled('parent')) {
-            try{
-                $parent = $user->store()->findOrFail($request->parent);
-                $parent->child()->attach($store->id);
-            }catch(ModelNotFoundException $e){}
-        }
-        return redirect('stores/'.$store->id);
+        $store->parent = $request->parent;
+        $store->genre = $request->genre;
+        $user->stores()->save($store);
+        return redirect()->route('stores.show', $store->id);
     }
 
     /**
@@ -61,6 +60,11 @@ class StoreController extends Controller
     public function show(Store $store)
     {
         //
+        if(!Auth::check()) return \App::abort(404);
+        $user = Auth::user();
+        if(! $user->stores()->where('id', '=', $store->id)->exists())
+            return \App::abort(404);
+        return view('stores.show', ["item" => $store, "childs" => $user->stores()->where('parent', $store->id)->pluck('id')]);
     }
 
     /**
@@ -71,7 +75,7 @@ class StoreController extends Controller
      */
     public function edit(Store $store)
     {
-        return view('store.edit', ["store" => $store]);
+        return view('stores.edit', ["item" => $store, "stores" => Auth::user()->stores()->get(), "genres" => Auth::user()->genres()->get()]);
     }
 
     /**
@@ -86,14 +90,10 @@ class StoreController extends Controller
         //
         $store->name = $request->name;
         $store->memo = $request->memo;
-        if($request->filled('parent')) {
-            try{
-                $parent = $user->store()->findOrFail($request->parent);
-                $parent->child()->attach($store->id);
-            }catch(ModelNotFoundException $e){}
-        }
+        $store->parent = $request->parent;
+        $store->genre = $request->genre;
         $store->save();
-        return redirect('stores/'.$store->id);
+        return redirect()->route('stores.show', $store->id);
     }
 
     /**
@@ -105,5 +105,6 @@ class StoreController extends Controller
     public function destroy(Store $store)
     {
         $store->delete();
+        return redirect('genres');
     }
 }
