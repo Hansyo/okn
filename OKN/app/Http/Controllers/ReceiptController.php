@@ -113,10 +113,13 @@ class ReceiptController extends Controller
             $receipt->purchase = $request->purchase;
             $receipt->amount = $request->amount;
             $receipt->memo = $request->memo;
-            $receipt->genre_id = $user->genre()->findOrFail($request->genre_id)->id;
-            if($request->filled('store_id')) $receipt->store_id = $user->store()->findOrFail($request->store_id)->id;
+            $receipt->genre_id = $user->genres()->findOrFail($request->genre_id)->id;
+            print($receipt->amount);
+            /*
+            if($request->filled('store_id')) $receipt->store_id = $user->stores()->findOrFail($request->store_id)->id;
+
             if($request->filled('payment_id')){
-                $payment = $user->payment()->findOrFail($request->payment_id);
+                $payment = $user->payments()->findOrFail($request->payment_id);
                 $receipt->payment_id = $payment->id;
                 $hist = new CreditHistory;
                 $hist->date = $request->purchase;
@@ -126,7 +129,8 @@ class ReceiptController extends Controller
                 $payment->credit()->amount += $hist->amount;
                 $payment->credit()->save();
             }
-            $user->receipt()->save($receipt);
+             */
+            $user->receipts()->save($receipt);
         }catch (Exception $e) {
         }
         return redirect()->route('receipts.show', $receipt->id);

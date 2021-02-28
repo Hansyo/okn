@@ -1,21 +1,33 @@
 @extends('home')
 @section('content')
 <div class="body-main">
-<form method="POST" action="{{ route("genres.show", $genre->id) }}">
+<form method="POST" action="{{ route("receipts.update", $item->id) }}">
     @csrf
     @method('PUT')
-    <label>name</label><input id="name" type="text" name="name" value="{{ $genre->name }}"/><br>
-    <label>memo</label><input id="memo" type="text" name="memo" value="{{ $genre->memo }}"/><br>
-    <label>parent</label><select id="parent" name="parent">
-        <option value="">必要であれば選択</option>
+    <label>purchase</label><input id="purchase" type="date" name="purchase" value="{{ $item->purchase }}"/><br>
+    <label>amount</label><input id="amount" type="number" name="amount" value="{{ $item->amount }}"/><br>
+    <label>memo</label><input id="memo" type="text" name="memo" value="{{ $item->memo }}"/><br>
+    <label>genre</label><select id="genre_id" name="genre_id">
         @foreach ($genres as $g)
-        @if($g->id != $genre->id)
-        <option value="{{ $g->id }}" @if ($genre->parent === $g->id) selected @endif >{{ $g->name }}</option>
-        @endif
+        <option value="{{ $g->id }}" @if ($item->genre_id === $g->id) selected @endif >{{ $g->name }}</option>
         @endforeach
     </select><br>
+{{--
+    <label>store</label><select id="store_id" name="store_id">
+        <option value="">必要であれば選択</option>
+        @foreach ($stores as $g)
+        <option value="{{ $g->id }}" @if ($item->store_id === $g->id) selected @endif >{{ $g->name }}</option>
+        @endforeach
+    </select><br>
+    <label>payment</label><select id="payment_id" name="payment_id">
+        <option value="">必要であれば選択</option>
+        @foreach ($payments as $g)
+        <option value="{{ $g->id }}" @if ($item->payment_id === $g->id) selected @endif >{{ $g->name }}</option>
+        @endforeach
+    </select><br>
+--}}
     <button type="submit"> 登録 </button>
 </form>
-<button type="button" onclick="location.href='{{ route('genres.show', $genre->id) }}'"> Cancel </button>
+<button type="button" onclick="location.href='{{ route('receipts.show', $item->id) }}'"> Cancel </button>
 </div>
 @endsection
