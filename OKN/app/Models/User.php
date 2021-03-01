@@ -80,7 +80,7 @@ class User extends Authenticatable
     }
 
     public function payments(){
-        return $this->hasMany(payment::class);
+        return $this->hasMany(Payment::class);
     }
 
     public function paymentGenres(){

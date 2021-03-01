@@ -29,5 +29,6 @@ Route::group(['middleware' => ['auth',]], function () {
         'genres' => GenreController::class,
         'stores' => StoreController::class,
         'paymentGenres' => PaymentGenreController::class,
+        'payments' => PaymentController::class,
     ]);
 });
