@@ -16,7 +16,6 @@ class StoreController extends Controller
     public function index()
     {
         //
-        if(!Auth::check()) return redirect('login'); //確認
         return view('stores.index', ["stores" => Auth::user()->stores()->get()]);
     }
 
@@ -28,7 +27,6 @@ class StoreController extends Controller
     public function create()
     {
         //
-        if(!Auth::check()) return redirect('login'); //確認
         return view('stores.create', ['stores' => Auth::user()->stores()->get() , 'genres' => Auth::user()->genres()->get()]);
     }
 
@@ -60,10 +58,7 @@ class StoreController extends Controller
     public function show(Store $store)
     {
         //
-        if(!Auth::check()) return \App::abort(404);
-        $user = Auth::user();
-        if(! $user->stores()->where('id', '=', $store->id)->exists())
-            return \App::abort(404);
+        if($store->user_id != Auth::id()) return \App::abort(404);
         return view('stores.show', ["item" => $store, "childs" => $user->stores()->where('parent', $store->id)->pluck('id')]);
     }
 
@@ -75,6 +70,7 @@ class StoreController extends Controller
      */
     public function edit(Store $store)
     {
+        if($store->user_id != Auth::id()) return \App::abort(404);
         return view('stores.edit', ["item" => $store, "stores" => Auth::user()->stores()->get(), "genres" => Auth::user()->genres()->get()]);
     }
 
@@ -88,6 +84,7 @@ class StoreController extends Controller
     public function update(Request $request, Store $store)
     {
         //
+        if($store->user_id != Auth::id()) return \App::abort(404);
         $store->name = $request->name;
         $store->memo = $request->memo;
         $store->parent = $request->parent;
@@ -104,6 +101,7 @@ class StoreController extends Controller
      */
     public function destroy(Store $store)
     {
+        if($store->user_id != Auth::id()) return \App::abort(404);
         $store->delete();
         return redirect()->route('stores.index');
     }
