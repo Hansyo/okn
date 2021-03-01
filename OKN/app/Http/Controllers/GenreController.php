@@ -56,7 +56,7 @@ class GenreController extends Controller
     public function show(Genre $genre)
     {
         if($genre->user != Auth::id()) return \App::abort(404);
-        return view('genres.show', ["genre" => $genre, "childs" => $user->genres()->where('parent', $genre->id)->pluck('id')]);
+        return view('genres.show', ["genre" => $genre, "childs" => Auth::user()->genres()->where('parent', $genre->id)->pluck('id')]);
     }
 
     /**

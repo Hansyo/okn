@@ -68,40 +68,40 @@ class User extends Authenticatable
      */
     public function genres()
     {
-        return $this->hasMany(Genre::class);
+        return $this->hasMany(Genre::class, 'user');
     }
 
     public function incomes() {
-        return $this->hasMany(Income::class);
+        return $this->hasMany(Income::class, 'user');
     }
 
     public function incomeGenres(){
-        return $this->hasMany(IncomeGenre::class);
+        return $this->hasMany(IncomeGenre::class, 'user');
     }
 
     public function payments(){
-        return $this->hasMany(Payment::class);
+        return $this->hasMany(Payment::class, 'user');
     }
 
     public function paymentGenres(){
-        return $this->hasMany(PaymentGenre::class);
+        return $this->hasMany(PaymentGenre::class, 'user');
     }
 
     public function presets(){
-        return $this->hasMany(Preset::class);
+        return $this->hasMany(Preset::class, 'user');
     }
 
     public function receipts()
     {
-        return $this->hasMany(Receipt::class);
+        return $this->hasMany(Receipt::class, 'user');
     }
 
     public function stores()
     {
-        return $this->hasMany(Store::class);
+        return $this->hasMany(Store::class, 'user');
     }
 
     public function targets(){
-        return $this->hasMany(Target::class);
+        return $this->hasMany(Target::class, 'user');
     }
 }
