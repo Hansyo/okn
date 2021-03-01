@@ -55,7 +55,7 @@ class PaymentGenreController extends Controller
      */
     public function show(PaymentGenre $paymentGenre)
     {
-        if($paymentGenre->user_id != Auth::id()) return \App::abort(404);
+        if($paymentGenre->user != Auth::id()) return \App::abort(404);
         return view('paymentGenres.show', ["item" => $paymentGenre, "childs" => Auth::user()->paymentGenres()->where('parent', $paymentGenre->id)->pluck('id')]);
     }
 
@@ -67,7 +67,7 @@ class PaymentGenreController extends Controller
      */
     public function edit(PaymentGenre $paymentGenre)
     {
-        if($paymentGenre->user_id != Auth::id()) return \App::abort(404);
+        if($paymentGenre->user != Auth::id()) return \App::abort(404);
         return view('paymentGenres.edit', ["item" => $paymentGenre, "paymentGenres" => Auth::user()->paymentGenres()->get()]);
     }
 
@@ -81,7 +81,7 @@ class PaymentGenreController extends Controller
     public function update(Request $request, PaymentGenre $paymentGenre)
     {
         // なりすまし防止
-        if($paymentGenre->user_id != Auth::id()) return \App::abort(404);
+        if($paymentGenre->user != Auth::id()) return \App::abort(404);
         $paymentGenre->name = $request->name;
         $paymentGenre->memo = $request->memo;
         $paymentGenre->parent = $request->parent;
@@ -98,7 +98,7 @@ class PaymentGenreController extends Controller
     public function destroy(PaymentGenre $paymentGenre)
     {
         // なりすまし防止
-        if($paymentGenre->user_id != Auth::id()) return \App::abort(404);
+        if($paymentGenre->user != Auth::id()) return \App::abort(404);
         $paymentGenre->delete();
         return redirect()->route('paymentGenres.index');
     }

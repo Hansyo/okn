@@ -17,10 +17,10 @@ class CreateIncomesTable extends Migration
             $table->id();
             $table->integer('price');
             $table->date('date');
-            $table->unsignedBigInteger('incomeGenre_id')->nullable();
-            $table->foreign('incomeGenre_id')->references('id')->on('IncomeGenres')->onDelete('set null');
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedBigInteger('incomeGenre')->nullable();
+            $table->foreign('incomeGenre')->references('id')->on('IncomeGenres')->onDelete('set null');
+            $table->unsignedBigInteger('user');
+            $table->foreign('user')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

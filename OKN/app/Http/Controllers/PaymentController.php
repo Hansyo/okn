@@ -54,7 +54,7 @@ class PaymentController extends Controller
      */
     public function show(Payment $payment)
     {
-        if($payment->user_id != Auth::id()) return \App::abort(404);
+        if($payment->user != Auth::id()) return \App::abort(404);
         return view('payments.show', ["item" => $payment]);
     }
 
@@ -66,7 +66,7 @@ class PaymentController extends Controller
      */
     public function edit(Payment $payment)
     {
-        if($payment->user_id != Auth::id()) return \App::abort(404);
+        if($payment->user != Auth::id()) return \App::abort(404);
         return view('payments.edit', ["item" => $payment, "paymentGenres" => Auth::user()->paymentGenres()->get()]);
     }
 
@@ -79,7 +79,7 @@ class PaymentController extends Controller
      */
     public function update(Request $request, Payment $payment)
     {
-        if($payment->user_id != Auth::id()) return \App::abort(404);
+        if($payment->user != Auth::id()) return \App::abort(404);
         $payment->name = $request->name;
         $payment->memo = $request->memo;
         $payment->paymentGenre = $request->paymentGenre;
@@ -95,7 +95,7 @@ class PaymentController extends Controller
      */
     public function destroy(Payment $payment)
     {
-        if($payment->user_id != Auth::id()) return \App::abort(404);
+        if($payment->user != Auth::id()) return \App::abort(404);
         $payment->delete();
         return redirect()->route('payments.index');
     }

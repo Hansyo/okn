@@ -17,8 +17,8 @@ class CreateIncomeGenresTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('memo')->nullable();
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedBigInteger('user');
+            $table->foreign('user')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('parent')->nullable();
             $table->foreign('parent')->references('id')->on('IncomeGenres')->onDelete('set null');
             $table->timestamps();

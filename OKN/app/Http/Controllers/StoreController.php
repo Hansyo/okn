@@ -58,7 +58,7 @@ class StoreController extends Controller
     public function show(Store $store)
     {
         //
-        if($store->user_id != Auth::id()) return \App::abort(404);
+        if($store->user != Auth::id()) return \App::abort(404);
         return view('stores.show', ["item" => $store, "childs" => $user->stores()->where('parent', $store->id)->pluck('id')]);
     }
 
@@ -70,7 +70,7 @@ class StoreController extends Controller
      */
     public function edit(Store $store)
     {
-        if($store->user_id != Auth::id()) return \App::abort(404);
+        if($store->user != Auth::id()) return \App::abort(404);
         return view('stores.edit', ["item" => $store, "stores" => Auth::user()->stores()->get(), "genres" => Auth::user()->genres()->get()]);
     }
 
@@ -84,7 +84,7 @@ class StoreController extends Controller
     public function update(Request $request, Store $store)
     {
         //
-        if($store->user_id != Auth::id()) return \App::abort(404);
+        if($store->user != Auth::id()) return \App::abort(404);
         $store->name = $request->name;
         $store->memo = $request->memo;
         $store->parent = $request->parent;
@@ -101,7 +101,7 @@ class StoreController extends Controller
      */
     public function destroy(Store $store)
     {
-        if($store->user_id != Auth::id()) return \App::abort(404);
+        if($store->user != Auth::id()) return \App::abort(404);
         $store->delete();
         return redirect()->route('stores.index');
     }
