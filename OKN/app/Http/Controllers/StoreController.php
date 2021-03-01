@@ -105,6 +105,6 @@ class StoreController extends Controller
     public function destroy(Store $store)
     {
         $store->delete();
-        return redirect('genres');
+        return redirect()->route('stores.index');
     }
 }
