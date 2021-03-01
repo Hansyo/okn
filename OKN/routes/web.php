@@ -27,4 +27,5 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
 Route::resources([
     'genres' => GenreController::class,
     'stores' => StoreController::class,
+    'paymentGenres' => PaymentGenreController::class,
 ]);
