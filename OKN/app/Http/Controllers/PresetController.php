@@ -15,7 +15,7 @@ class PresetController extends Controller
      */
     public function index()
     {
-        //
+        return view('presets.index', ["items" => Auth::user()->presets()->get()]);
     }
 
     /**
@@ -25,7 +25,11 @@ class PresetController extends Controller
      */
     public function create()
     {
-        return view('receipts.create');
+        return view('presets.create', [
+            "genres" => Auth::user()->genres()->get(),
+            "stores" => Auth::user()->stores()->get(),
+            "payments" => Auth::user()->payments()->get(),
+            ]);
     }
 
     /**
@@ -36,19 +40,16 @@ class PresetController extends Controller
      */
     public function store(Request $request)
     {
-        try {
             $user = Auth::user();
-            $receipt = new Receipt;
-            $receipt->name = $request->name;
-            $receipt->price = $request->price;
-            $receipt->memo = $request->memo;
-            if($request->filled('genre_id'))$receipt->genre_id = $user->genre()->findOrFail($request->genre_id)->id;
-            if($request->filled('store_id')) $receipt->store_id = $user->store()->findOrFail($request->store_id)->id;
-            if($request->filled('payment_id')) $receipt->payment_id = $user->payment()->findOrFail($request->payment_id)->id;
-            $user->receipt()->save($receipt);
-        }catch (Exception $e) {
-        }
-        return redirect('receipts/'.$receipt->id);
+            $preset = new Preset;
+            $preset->name = $request->name;
+            $preset->price = $request->price;
+            $preset->memo = $request->memo;
+            $preset->genre = $request->genre;
+            $preset->store = $request->store;
+            $preset->payment = $request->payment;
+            $user->presets()->save($preset);
+        return redirect()->route('presets.show', $preset->id);
     }
 
     /**
@@ -59,7 +60,8 @@ class PresetController extends Controller
      */
     public function show(Preset $preset)
     {
-        //
+        if($preset->user != Auth::id()) return \App::abort(404);
+        return view('presets.show', ["item" => $preset]);
     }
 
     /**
@@ -70,8 +72,13 @@ class PresetController extends Controller
      */
     public function edit(Preset $preset)
     {
-        //
-        return view('receipts.create');
+        if($preset->user != Auth::id()) return \App::abort(404);
+        return view('presets.edit', [
+            "item" => $preset,
+            "genres" => Auth::user()->genres()->get(),
+            "stores" => Auth::user()->stores()->get(),
+            "payments" => Auth::user()->payments()->get(),
+        ]);
     }
 
     /**
@@ -83,20 +90,15 @@ class PresetController extends Controller
      */
     public function update(Request $request, Preset $preset)
     {
-        //
-        try {
-            $user = Auth::user();
-            $receipt = new Receipt;
-            $receipt->name = $request->name;
-            $receipt->price = $request->price;
-            $receipt->memo = $request->memo;
-            if($request->filled('genre_id'))$receipt->genre_id = $user->genre()->findOrFail($request->genre_id)->id;
-            if($request->filled('store_id')) $receipt->store_id = $user->store()->findOrFail($request->store_id)->id;
-            if($request->filled('payment_id')) $receipt->payment_id = $user->payment()->findOrFail($request->payment_id)->id;
-            $receipt->save();
-        }catch (Exception $e) {
-        }
-        return redirect('receipts/'.$receipt->id);
+        if($preset->user != Auth::id()) return \App::abort(404);
+        $preset->name = $request->name;
+        $preset->price = $request->price;
+        $preset->memo = $request->memo;
+        $preset->genre = $request->genre;
+        $preset->store = $request->store;
+        $preset->payment = $request->payment;
+        $preset->save();
+        return redirect()->route('presets.show', ["item" => $preset]);
     }
 
     /**
@@ -107,7 +109,8 @@ class PresetController extends Controller
      */
     public function destroy(Preset $preset)
     {
-        //
+        if($preset->user != Auth::id()) return \App::abort(404);
         $preset->delete();
+        return redirect()->route('presets.index');
     }
 }
