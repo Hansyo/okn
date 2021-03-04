@@ -11,6 +11,7 @@
         <option value="{{ $tmp->id }}">{{ $tmp->name }}</option>
         @endforeach
     </select><br>
+    <input type="checkbox" id="noCredit" name="noCredit">残高が不要な人はチェック（クレジットカード等の場合です。）<br>
     <button type="submit"> 登録 </button>
 </form>
 </div>

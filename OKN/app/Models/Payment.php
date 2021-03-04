@@ -15,11 +15,11 @@ class Payment extends Model
 
     public function credits()
     {
-        return $this->hasOne(Credit::class);
+        return $this->hasOne(Credit::class, 'payment');
     }
 
     public function receipts()
     {
-        return $this->hasMany(Receipt::class);
+        return $this->hasMany(Receipt::class, 'payment');
     }
 }

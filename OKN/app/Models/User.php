@@ -106,7 +106,7 @@ class User extends Authenticatable
     }
 
     public function credits(){
-        return $this->hasMany(Credit::class, 'uesr');
+        return $this->hasMany(Credit::class, 'user');
     }
 
     public function creditHistories(){
