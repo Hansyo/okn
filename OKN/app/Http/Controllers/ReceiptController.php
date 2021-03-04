@@ -16,8 +16,6 @@ class ReceiptController extends Controller
      */
     public function index()
     {
-        //
-        if(!Auth::check()) return redirect('login'); //確認
         return view('receipts.index', ["items" => Auth::user()->receipts()->get()]);
     }
 
@@ -28,13 +26,11 @@ class ReceiptController extends Controller
      */
     public function create()
     {
-        //
-        if(!Auth::check()) return redirect('login'); //確認
         $user = Auth::user();
-        return view('receipts.create',
-            ['genres' => $user->genres()->get(),
-             'stores' => $user->stores()->get(),
-             'payments' => $user->payments()->get(),
+        return view('receipts.create', [
+            'genres' => $user->genres()->get(),
+            'stores' => $user->stores()->get(),
+            'payments' => $user->payments()->get(),
             ]);
     }
 
@@ -50,24 +46,29 @@ class ReceiptController extends Controller
             $user = Auth::user();
             $receipt = new Receipt;
             $receipt->purchase = $request->purchase;
-            $receipt->amount = $request->amount;
-            $receipt->memo = $request->memo;
-            $receipt->genre_id = $user->genres()->findOrFail($request->genre_id)->id;
-            if($request->filled('store_id')) $receipt->store_id = $user->stores()->findOrFail($request->store_id)->id;
-            if($request->filled('payment_id')){
-                $payment = $user->payments()->findOrFail($request->payment_id);
-                $receipt->payment_id = $payment->id;
-                $hist = new CreditHistory;
-                $hist->date = $request->purchase;
-                $hist->amount = -1 * $request->amount;
-                $hist->memo = route('receipts.show', $receipt->id);
-                $payment->credit()->history()->save($hist);
-                $payment->credit()->amount += $hist->amount;
-                $payment->credit()->save();
-            }
+            $receipt->amount   = $request->amount;
+            $receipt->memo     = $request->memo;
+            $receipt->genre    = $request->genre;
+            $receipt->store    = $request->store;
+            $receipt->payment  = $request->payment;
             $user->receipts()->save($receipt);
-        }catch (Exception $e) {
-        }
+            if($request->filled('payment')){
+                $hist = new CreditHistory;
+                $hist->date   = $request->purchase;
+                $hist->amount = -1 * $request->amount;
+                $hist->memo   = route('receipts.show', $receipt->id);
+                $hist->user   = Auth::id();
+
+                $payment = $user->payments()->findOrFail($request->payment);
+                $credit = $payment->credits()->first();
+                $credit->credit += $hist->amount;
+                $credit->save();
+                $credit->histories()->save($hist);
+                $receipt->creditHistory = $hist->id;
+                $receipt->save();
+            }
+
+        }catch (Exception $e) { }
         return redirect()->route('receipts.show', $receipt->id);
     }
 
@@ -79,10 +80,7 @@ class ReceiptController extends Controller
      */
     public function show(Receipt $receipt)
     {
-        if(!Auth::check()) return \App::abort(404);
-        $user = Auth::user();
-        if(! $user->receipts()->where('id', '=', $receipt->id)->exists())
-            return \App::abort(404);
+        if($receipt->user != Auth::id()) return \App::abort(404);
         return view('receipts.show', ["item" => $receipt]);
     }
 
@@ -94,8 +92,12 @@ class ReceiptController extends Controller
      */
     public function edit(Receipt $receipt)
     {
-        //
-        return view('receipts.edit', ["item" => $receipt, "genres" => Auth::user()->genres()->get()]);
+        if($receipt->user != Auth::id()) return \App::abort(404);
+        $user = Auth::user();
+        return view('receipts.edit', ["item" => $receipt,
+            'genres' => $user->genres()->get(),
+            'stores' => $user->stores()->get(),
+        ]);
     }
 
     /**
@@ -107,30 +109,26 @@ class ReceiptController extends Controller
      */
     public function update(Request $request, Receipt $receipt)
     {
-        //
+        if($receipt->user != Auth::id()) return \App::abort(404);
         try {
             $user = Auth::user();
+            $old_amount = $receipt->amount;
             $receipt->purchase = $request->purchase;
             $receipt->amount = $request->amount;
             $receipt->memo = $request->memo;
-            $receipt->genre_id = $user->genres()->findOrFail($request->genre_id)->id;
-            print($receipt->amount);
-            /*
-            if($request->filled('store_id')) $receipt->store_id = $user->stores()->findOrFail($request->store_id)->id;
-
-            if($request->filled('payment_id')){
-                $payment = $user->payments()->findOrFail($request->payment_id);
-                $receipt->payment_id = $payment->id;
-                $hist = new CreditHistory;
+            $receipt->genre = $request->genre;
+            $receipt->store = $request->store;
+            if($receipt->payment != null && $old_amount != $request->amount){
+                $payment = $user->payments()->findOrFail($receipt->payment);
+                $hist = $payment->creditHistory()->first();
+                $credit = $hist->credit()->first();
                 $hist->date = $request->purchase;
                 $hist->amount = -1 * $request->amount;
-                $hist->memo = url('receipts/').$receipt->id;
-                $payment->credit()->history()->save($hist);
-                $payment->credit()->amount += $hist->amount;
-                $payment->credit()->save();
+                $credit->credit += $old_amount - $request->amount;
+                $credit->save();
+                $hist->save();
             }
-             */
-            $user->receipts()->save($receipt);
+            $receipt->save();
         }catch (Exception $e) {
         }
         return redirect()->route('receipts.show', $receipt->id);
@@ -144,7 +142,14 @@ class ReceiptController extends Controller
      */
     public function destroy(Receipt $receipt)
     {
-        //
+        if($receipt->user != Auth::id()) return \App::abort(404);
+        $hist = $receipt->creditHistory()->first();
+        if($hist != null){
+            $credit = $hist->credits()->first();
+            $credit->credit += -1 * $hist->amount;
+            $credit->save();
+            $hist->delete();
+        }
         $receipt->delete();
         return redirect('receipts');
     }

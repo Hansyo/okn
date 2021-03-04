@@ -6,7 +6,7 @@
     @foreach ($items as $receipt)
     <tr>
 <td><a href="{{route('receipts.show', $receipt->id)}}">{{ $receipt->purchase }}</a></td>
-<td><a href="{{route('genres.show', $receipt->genre_id)}}">{{ $receipt->genre_id }}</a></td>
+<td><a href="{{route('genres.show', $receipt->genre)}}">{{ $receipt->genre }}</a></td>
 <td>{{ $receipt->memo }}</td></tr>
     @endforeach
 </table>
