@@ -24,7 +24,20 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
 
 
 # 各種コントローラーに対してCRUD処理できるリソースを張る
+<<<<<<< HEAD
 Route::resources([
     'genres' => GenreController::class,
     'receipts' => ReceiptController::class,
 ]);
+=======
+Route::group(['middleware' => ['auth',]], function () {
+    Route::resources([
+        'genres' => GenreController::class,
+        'stores' => StoreController::class,
+        'paymentGenres' => PaymentGenreController::class,
+        'payments' => PaymentController::class,
+        'presets' => PresetController::class,
+        'creditHistories' => CreditHistoryController::class,
+    ]);
+});
+>>>>>>> feature/model-view/master

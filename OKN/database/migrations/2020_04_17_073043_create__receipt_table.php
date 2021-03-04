@@ -19,16 +19,16 @@ class CreateReceiptTable extends Migration
             $table->date('purchase');
             $table->integer('amount');
             $table->string('memo')->nullable();
-            $table->unsignedBigInteger('genre_id');
-            $table->foreign('genre_id')->references('id')->on('Genres');
-            $table->unsignedBigInteger('store_id')->nullable();
-            $table->foreign('store_id')->references('id')->on('Stores')->onDelete('set null');
-            $table->unsignedBigInteger('payment_id')->nullable();
-            $table->foreign('payment_id')->references('id')->on('Payments')->onDelete('set null');
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->unsignedBigInteger('creditHistory_id')->nullable();
-            $table->foreign('creditHistory_id')->references('id')->on('CreditHistories')->onDelete('cascade');
+            $table->unsignedBigInteger('genre');
+            $table->foreign('genre')->references('id')->on('Genres');
+            $table->unsignedBigInteger('store')->nullable();
+            $table->foreign('store')->references('id')->on('Stores')->onDelete('set null');
+            $table->unsignedBigInteger('payment')->nullable();
+            $table->foreign('payment')->references('id')->on('Payments')->onDelete('set null');
+            $table->unsignedBigInteger('user');
+            $table->foreign('user')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedBigInteger('creditHistory');
+            $table->foreign('creditHistory')->references('id')->on('CreditHistories')->onDelete('cascade');
             $table->timestamps();
         });
     }

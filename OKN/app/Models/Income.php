@@ -11,7 +11,7 @@ class Income extends Model
 
     public function incomeGenre()
     {
-        return $this->belongsTo('App\Models\IncomeGenre', 'incomeGenre_id');
+        return $this->belongsTo('App\Models\IncomeGenre', 'incomeGenre');
     }
 
 }

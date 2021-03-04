@@ -21,7 +21,9 @@
                 @section('navi-main-right')
                 @auth
                 <div>通知</div>
-                <div>ユーザ</div>
+                <div>
+                <a href="{{ route('dashboard') }}" class="link-clear">
+                    <div class="navi-btn btn-color"> ユーザ</a></div>
                 @endauth
                 @guest
                 <a href="{{ route('login') }}" class="link-clear">

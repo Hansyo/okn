@@ -42,8 +42,8 @@ class CreditController extends Controller
         $credit = new Credit;
         $user = User::find(Auth::id());
         $credit->credit = $request->credit;
-        if($user->payment()->where('payment_id', $request->payment_id)->exist())
-            $credit->payment_id = $request->payment_id;
+        if($user->payment()->where('payment', $request->payment)->exist())
+            $credit->payment = $request->payment;
         else
             return view('credits.create', ['request'=>$request, 'error'=>'Payment Not Found.']);
         $user->credit()->save($credit);
@@ -85,8 +85,8 @@ class CreditController extends Controller
         $credit = new Credit;
         $user = User::find(Auth::id());
         $credit->credit = $request->credit;
-        if($user->payment()->where('payment_id', $request->payment_id)->exist())
-            $credit->payment_id = $request->payment_id;
+        if($user->payment()->where('payment', $request->payment)->exist())
+            $credit->payment = $request->payment;
         else
             return view('credits.edit', ['request'=>$request, 'error'=>'Payment Not Found.']);
         $credit->save();

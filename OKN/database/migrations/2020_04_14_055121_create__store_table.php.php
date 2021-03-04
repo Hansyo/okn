@@ -18,10 +18,12 @@ class CreateStoreTable extends Migration
             $table->string('name');
             $table->string('memo')->nullable();
             $table->timestamps();
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->unsignedBigInteger('parent');
-            $table->foreign('parent')->references('id')->on('Stores')->onDelete('cascade');
+            $table->unsignedBigInteger('user');
+            $table->foreign('user')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedBigInteger('parent')->nullable();
+            $table->foreign('parent')->references('id')->on('Stores')->onDelete('set null');
+            $table->unsignedBigInteger('genre')->nullable();
+            $table->foreign('genre')->references('id')->on('Genres')->onDelete('set null');
         });
     }
 

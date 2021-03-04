@@ -18,12 +18,12 @@ class CreatePaymentsTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('memo')->nullable();
-            $table->unsignedBigInteger('paymentGenre_id')->nullable();
-            $table->foreign('paymentGenre_id')
+            $table->unsignedBigInteger('paymentGenre')->nullable();
+            $table->foreign('paymentGenre')
                   ->references('id')->on('PaymentGenres')
                   ->onDelete('set null');
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedBigInteger('user');
+            $table->foreign('user')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
