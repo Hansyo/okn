@@ -20,6 +20,8 @@ class CreateCreditHistoriesTable extends Migration
             $table->date('date');
             $table->integer('amount');
             $table->string('memo')->nullable();
+            $table->unsignedBigInteger('user');
+            $table->foreign('user')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

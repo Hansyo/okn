@@ -18,6 +18,8 @@ class CreateCreditsTable extends Migration
             $table->unsignedBigInteger('payment');
             $table->foreign('payment')->references('id')->on('Payments')->onDelete('cascade');
             $table->integer('credit');
+            $table->unsignedBigInteger('user');
+            $table->foreign('user')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
