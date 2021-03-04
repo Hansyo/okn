@@ -59,7 +59,7 @@ class StoreController extends Controller
     {
         //
         if($store->user != Auth::id()) return \App::abort(404);
-        return view('stores.show', ["item" => $store, "childs" => $user->stores()->where('parent', $store->id)->pluck('id')]);
+        return view('stores.show', ["item" => $store, "childs" => Auth::user()->stores()->where('parent', $store->id)->pluck('id')]);
     }
 
     /**
