@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Payment;
+use App\Models\Credit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -43,6 +44,11 @@ class PaymentController extends Controller
         $payment->memo = $request->memo;
         $payment->paymentGenre = $request->paymentGenre;
         $user->payments()->save($payment);
+        if(! $request->filled('noCredit')) {
+            $credit = new Credit;
+            $credit->credit = 0;
+            $payment->credits()->save($credit);
+        }
         return redirect()->route('payments.show', $payment->id);
     }
 
@@ -55,7 +61,7 @@ class PaymentController extends Controller
     public function show(Payment $payment)
     {
         if($payment->user != Auth::id()) return \App::abort(404);
-        return view('payments.show', ["item" => $payment]);
+        return view('payments.show', ["item" => $payment, "credit" => $payment->credits()->first()]);
     }
 
     /**

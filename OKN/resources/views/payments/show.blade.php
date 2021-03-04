@@ -3,6 +3,7 @@
 <div class="body-main">
     <table border="1">
     <tr><td>name  </td><td>{{ $item->name }}  </td></tr>
+    <tr><td>credit  </td><td>@if($credit){{ $credit->credit }}@else 記録なし @endif</td></tr>
     <tr><td>memo  </td><td>{{ $item->memo }}  </td></tr>
     <tr><td>Genre</td><td>
     @if($item->paymentGenre)<a href="{{ route('paymentGenres.show', $item->paymentGenre) }}">{{ $item->paymentGenre }}</a>@endif
