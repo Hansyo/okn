@@ -119,9 +119,8 @@ class ReceiptController extends Controller
             $receipt->genre = $request->genre;
             $receipt->store = $request->store;
             if($receipt->payment != null && $old_amount != $request->amount){
-                $payment = $user->payments()->findOrFail($receipt->payment);
-                $hist = $payment->creditHistory()->first();
-                $credit = $hist->credit()->first();
+                $hist = $receipt->creditHistory()->first();
+                $credit = $hist->credits()->first();
                 $hist->date = $request->purchase;
                 $hist->amount = -1 * $request->amount;
                 $credit->credit += $old_amount - $request->amount;
