@@ -31,5 +31,6 @@ Route::group(['middleware' => ['auth',]], function () {
         'paymentGenres' => PaymentGenreController::class,
         'payments' => PaymentController::class,
         'presets' => PresetController::class,
+        'creditHistories' => CreditHistoryController::class,
     ]);
 });

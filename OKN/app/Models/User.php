@@ -104,4 +104,12 @@ class User extends Authenticatable
     public function targets(){
         return $this->hasMany(Target::class, 'user');
     }
+
+    public function credits(){
+        return $this->hasMany(Credit::class, 'uesr');
+    }
+
+    public function creditHistories(){
+        return $this->hasMany(CreditHistory::class, 'user');
+    }
 }
