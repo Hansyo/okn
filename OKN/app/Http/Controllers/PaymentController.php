@@ -47,6 +47,7 @@ class PaymentController extends Controller
         if(! $request->filled('noCredit')) {
             $credit = new Credit;
             $credit->credit = 0;
+            $credit->user = Auth::id();
             $payment->credits()->save($credit);
         }
         return redirect()->route('payments.show', $payment->id);
