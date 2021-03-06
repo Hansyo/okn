@@ -15,6 +15,7 @@
         <li><a href="{{ route('paymentGenres.index') }}">支払いジャンル一覧</a></li>
         <li><a href="{{ route('payments.index') }}">支払い方法一覧</a></li>
         <li><a href="{{ route('presets.index') }}">プリセット一覧</a></li>
+        <li><a href="{{ route('incomeGenres.index') }}">収入ジャンル一覧</a></li>
     </ul>
 @endsection
 @endauth
