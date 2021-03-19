@@ -1,0 +1,30 @@
+@charset "utf-8";
+
+:root {
+	--width-max: 980px;
+
+	--color-baseLight:       #ffffff;
+	--color-baseLight-combi: #1c1c1c;
+	--color-baseDark:        #fff8e2;
+	--color-baseDark-combi:  #1c1c1c;
+	--color-main:            #985e41;
+	--color-main-combi:      #fafafa;
+	--color-accent:          #bf495a;
+	--color-accent-combi:    #fafafa;
+}
+
+/* フォントサイズは，rem単位によってルート要素からの相対的な長さを指定する
+   相対的な指定によりレスポンシブ対応が可能 */
+html {
+	font-size: 10px;
+	font-family: sans-serif;
+}
+h1 {
+	font-size: 3rem;
+}
+h2 {
+	font-size: 2.4rem;
+}
+p {
+	font-size: 1.6rem;
+}

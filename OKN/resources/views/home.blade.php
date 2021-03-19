@@ -1,21 +1,13 @@
 @extends('base')
 
-@section('content')
-            <div class="body-main">メイン<br>コンテンツだよーん</div>
-            <div class="body-sub">サブ</div>
+@section('main-section')
+<section class="bl-main-section bl-announceUnit">
+    <h2>アナウンス</h2>
+</section>
+<section class="bl-main-section bl-reportUnit">
+    <h2>今月の支出</h2>
+</section>
+<section class="bl-main-section bl-historyUnit">
+    <h2>最近の履歴</h2>
+</section>
 @endsection
-
-@auth
-@section('navi-sub-left')
-    <ul class="navi-menu">
-        <li><a href="{{ route('home') }}">ホーム</a></li>
-        <li><a href="{{ route('genres.index') }}">ジャンル一覧</a></li>
-        <li><a href="{{ route('receipts.index') }}">レシート一覧</a></li>
-        <li><a href="{{ route('stores.index') }}">店舗一覧</a></li>
-        <li><a href="{{ route('paymentGenres.index') }}">支払いジャンル一覧</a></li>
-        <li><a href="{{ route('payments.index') }}">支払い方法一覧</a></li>
-        <li><a href="{{ route('presets.index') }}">プリセット一覧</a></li>
-    </ul>
-@endsection
-@endauth
-
