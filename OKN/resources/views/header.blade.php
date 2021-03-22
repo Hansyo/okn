@@ -1,13 +1,13 @@
 <header class="ly-header">
     <div class="ly-header-inner">
         <h1 class="el-logo">
-            <a href="">OKN</a>
+            <a href="{{ route('root') }}">OKN</a>
         </h1>
         <nav class="bl-globalNavi">
             <ul class="bl-globalNavi-body">
-                <li><a href="">ホーム</a></li>
-                <li><a href="">家計簿</a></li>
-                <li><a href="">家計レポート</a></li>
+                <li><a href="{{ route('home') }}">ホーム</a></li>
+                <li><a href="{{ route('book') }}">家計簿</a></li>
+                <li><a href="{{ route('report')}}">家計レポート</a></li>
             </ul>
         </nav>
         <div class="bl-accountMenu">
@@ -18,7 +18,7 @@
             </ul>
         </div>
         <button class="el-btn el-btn--accent" type="button">
-            <a href="">レシートを貼る</a>
+            <a href="{{ route('receipts.create') }}">レシートを貼る</a>
         </button>
     </div>
 </header>
