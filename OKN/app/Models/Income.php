@@ -14,4 +14,9 @@ class Income extends Model
         return $this->belongsTo('App\Models\IncomeGenre', 'incomeGenre');
     }
 
+    public function history()
+    {
+        return $this->belongsTo(CreditHistory::class, 'creditHistory');
+    }
+
 }

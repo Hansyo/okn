@@ -16,6 +16,7 @@ class IncomeGenreController extends Controller
     public function index()
     {
         //
+        return view('incomeGenres.index', ["items" => Auth::user()->incomeGenres()->get()]);
     }
 
     /**
@@ -26,7 +27,7 @@ class IncomeGenreController extends Controller
     public function create()
     {
         //
-        return view('incomeGenre.create');
+        return view('incomeGenres.create', ["incomeGenres" => Auth::user()->incomeGenres()->get()]);
     }
 
     /**
@@ -37,19 +38,13 @@ class IncomeGenreController extends Controller
      */
     public function store(Request $request)
     {
-        //
         $incomeGenre = new IncomeGenre;
         $user = Auth::user();
         $incomeGenre->name = $request->name;
         $incomeGenre->memo = $request->memo;
-        $user->incomeGenre()->save($incomeGenre);
-        if($request->filled('parent')) {
-            try{
-                $parent = $user->incomeGenre()->findOrFail($request->parent);
-                $parent->child()->attach($incomeGenre->id);
-            }catch(ModelNotFoundException $e){}
-        }
-        return redirect('incomeGenres/'.$incomeGenre->id);
+        $incomeGenre->parent = $request->parent;
+        $user->incomeGenres()->save($incomeGenre);
+        return redirect()->route('incomeGenres.show', $incomeGenre->id);
     }
 
     /**
@@ -60,7 +55,8 @@ class IncomeGenreController extends Controller
      */
     public function show(IncomeGenre $incomeGenre)
     {
-        //
+        if($incomeGenre->user != Auth::id()) return \App::abort(404);
+        return view('incomeGenres.show', ["item" => $incomeGenre, "childs" => Auth::user()->incomeGenres()->where('parent','=',$incomeGenre->id)->get()]);
     }
 
     /**
@@ -71,7 +67,8 @@ class IncomeGenreController extends Controller
      */
     public function edit(IncomeGenre $incomeGenre)
     {
-        return view('incomeGenre.edit', ["incomeGenre" => $incomeGenre]);
+        if($incomeGenre->user != Auth::id()) return \App::abort(404);
+        return view('incomeGenres.edit', ["item" => $incomeGenre, "incomeGenres" => Auth::user()->incomeGenres()->get()]);
     }
 
     /**
@@ -83,17 +80,12 @@ class IncomeGenreController extends Controller
      */
     public function update(Request $request, IncomeGenre $incomeGenre)
     {
-        //
+        if($incomeGenre->user != Auth::id()) return \App::abort(404);
         $incomeGenre->name = $request->name;
         $incomeGenre->memo = $request->memo;
-        if($request->filled('parent')) {
-            try{
-                $parent = $user->incomeGenre()->findOrFail($request->parent);
-                $parent->child()->attach($incomeGenre->id);
-            }catch(ModelNotFoundException $e){}
-        }
+        $incomeGenre->parent = $request->parent;
         $incomeGenre->save();
-        return redirect('incomeGenres/'.$incomeGenre->id);
+        return redirect()->route('incomeGenres.show', $incomeGenre->id);
     }
 
     /**
@@ -105,6 +97,8 @@ class IncomeGenreController extends Controller
     public function destroy(IncomeGenre $incomeGenre)
     {
         //
+        if($incomeGenre->user != Auth::id()) return \App::abort(404);
         $incomeGenre->delete();
+        return redirect()->route('incomeGenres.index');
     }
 }

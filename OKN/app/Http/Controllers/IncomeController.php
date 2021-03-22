@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Income;
+use App\Models\CreditHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,7 +16,7 @@ class IncomeController extends Controller
      */
     public function index()
     {
-        //
+        return view('incomes.index', ["items" => Auth::user()->incomes()->get()]);
     }
 
     /**
@@ -25,7 +26,11 @@ class IncomeController extends Controller
      */
     public function create()
     {
-        return view('income.create');
+        $user = Auth::user();
+        return view('incomes.create', [
+            'payments' => $user->payments()->get(),
+            'incomeGenres' => $user->incomeGenres()->get(),
+        ]);
     }
 
     /**
@@ -39,13 +44,28 @@ class IncomeController extends Controller
         try{
             $income = new Income;
             $user = Auth::user();
-            $income->price = $request->price;
+            $income->amount = $request->amount;
             $income->date = $request->date;
-            if($request->filled('incomeGenre_id'))
-                $income->incomeGenre_id = $user->income()->findOrFail($request->incomeGenre_id)->id;
-            $user->income()->save($income);
-        }catch(Exception $e){}
-        return redirect('incomes/'.$income->id);
+            $income->payment = $request->payment;
+            $income->incomeGenre = $request->incomeGenre;
+            $user->incomes()->save($income);
+            { // CreditHistoryに登録する。
+                $hist = new CreditHistory;
+                $hist->date   = $request->date;
+                $hist->amount = $request->amount;
+                $hist->memo   = route('incomes.show', $income->id);
+                $hist->user   = Auth::id();
+
+                $payment = $user->payments()->findOrFail($request->payment);
+                $credit = $payment->credits()->first();
+                $credit->credit += $hist->amount;
+                $credit->save();
+                $credit->histories()->save($hist);
+                $income->creditHistory = $hist->id;
+                $income->save();
+            }
+        }catch(Exception $e) {}
+        return redirect()->route('incomes.show', $income->id);
     }
 
     /**
@@ -56,7 +76,8 @@ class IncomeController extends Controller
      */
     public function show(Income $income)
     {
-        //
+        if($income->user != Auth::id()) return \App::abort();
+        return view('incomes.show', ["item" => $income]);
     }
 
     /**
@@ -67,7 +88,14 @@ class IncomeController extends Controller
      */
     public function edit(Income $income)
     {
-        //
+       
+        if($income->user != Auth::id()) return \App::abort();
+        $user = Auth::user();
+        return view('incomes.edit', [
+            'item' => $income,
+            'payments' => $user->payments()->get(),
+            'incomeGenres' => $user->incomeGenres()->get(),
+        ]);
     }
 
     /**
@@ -79,16 +107,23 @@ class IncomeController extends Controller
      */
     public function update(Request $request, Income $income)
     {
-        //
-        try{
-            $income = new Income;
-            $income->price = $request->price;
-            $income->date = $request->date;
-            if($request->filled('incomeGenre_id'))
-                $income->incomeGenre_id = $user->income()->findOrFail($request->incomeGenre_id)->id;
-        }catch(Exception $e){}
+        if($income->user != Auth::id()) return \App::abort();
+        $user = Auth::user();
+        $old_amount = $income->amount;
+        $income->amount = $request->amount;
+        $income->date = $request->date;
+        $income->incomeGenre = $request->incomeGenre;
+        if($old_amount != $request->amount){
+            $hist = $income->history()->first();
+            $credit = $hist->credits()->first();
+            $hist->date = $request->date;
+            $hist->amount = $request->amount;
+            $credit->credit -= $old_amount - $request->amount;
+            $credit->save();
+            $hist->save();
+        }
         $income->save();
-        return redirect('incomes/'.$income->id);
+        return redirect()->route('incomes.show', $income->id);
     }
 
     /**
@@ -99,7 +134,15 @@ class IncomeController extends Controller
      */
     public function destroy(Income $income)
     {
-        //
+        if($income->user != Auth::id()) return \App::abort();
+        $hist = $income->history()->first();
+        if($hist != null){
+            $credit = $hist->credits()->first();
+            $credit->credit += -1 * $hist->amount;
+            $credit->save();
+            $hist->delete();
+        }
         $income->delete();
+        return redirect()->route('incomes.index');
     }
 }
