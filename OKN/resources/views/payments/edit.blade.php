@@ -1,5 +1,5 @@
-@extends('home')
-@section('content')
+@extends('base')
+@section('main-section')
 <div class="body-main">
 <form method="POST" action="{{ route("payments.update", $item->id) }}">
     @csrf
