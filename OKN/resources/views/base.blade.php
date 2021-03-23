@@ -17,7 +17,9 @@
         @yield('script')
     </head>
     <body>
+        @section('header')
         @include('header')
+        @show
 
         <div class="ly-body">
             <main class="ly-main">
@@ -25,6 +27,8 @@
             </main>
         </div>
 
+        @section('footer')
         @include('footer')
+        @show
     </body>
 </html>
