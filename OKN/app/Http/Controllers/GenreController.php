@@ -17,7 +17,7 @@ class GenreController extends Controller
      */
     public function index()
     {
-        return view('genres.index', ["genres" => Auth::user()->genres()->get()]);
+        return view('genres.index', ["items" => Auth::user()->genres()->get()]);
     }
 
     /**
@@ -56,7 +56,7 @@ class GenreController extends Controller
     public function show(Genre $genre)
     {
         if($genre->user != Auth::id()) return \App::abort(404);
-        return view('genres.show', ["genre" => $genre, "childs" => Auth::user()->genres()->where('parent', $genre->id)->pluck('id')]);
+        return view('genres.show', ["item" => $genre, "childs" => Auth::user()->genres()->where('parent', $genre->id)->pluck('id')]);
     }
 
     /**
@@ -68,7 +68,7 @@ class GenreController extends Controller
     public function edit(Genre $genre)
     {
         if($genre->user != Auth::id()) return \App::abort(404);
-        return view('genres.edit', ["genre" => $genre, "genres" => Auth::user()->genres()->get()]);
+        return view('genres.edit', ["item" => $genre, "genres" => Auth::user()->genres()->get()]);
     }
 
     /**

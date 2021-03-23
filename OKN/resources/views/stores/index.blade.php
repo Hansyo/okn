@@ -3,7 +3,7 @@
 <div class="body-main">
     <table border="1">
     <tr><th>ジャンル名</th><th>メモ</th></tr>
-    @foreach ($stores as $item)
+    @foreach ($items as $item)
     <tr><td><a href="{{route('stores.show', $item->id)}}">{{ $item->name }}</a></td><td>{{ $item->memo }}</td></tr>
     @endforeach
 </table>
