@@ -1,22 +1,22 @@
 @charset "utf-8";
 
 .el-logo {
-	color: var(--color-main);
-	font-weight: 600;
+    color: var(--color-main);
+    font-weight: 600;
 }
 
 .el-btn {
-	padding: 10px;
-	border-radius: 4px;
-	background-color: var(--color-main);
-	color: var(--color-main-combi);
-	font-size: 1.6rem;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: var(--color-main);
+    color: var(--color-main-combi);
+    font-size: 1.6rem;
 }
 .el-btn.el-btn--accent {
-	background-color: var(--color-accent);
-	color: var(--color-accent-combi);
+    background-color: var(--color-accent);
+    color: var(--color-accent-combi);
 }
 
 .el-copyright {
-	text-align: center;
+    text-align: center;
 }
