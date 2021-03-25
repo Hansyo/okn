@@ -15,7 +15,6 @@ class PaymentGenreController extends Controller
      */
     public function index()
     {
-        //
         return view('paymentGenres.index', ["items" => Auth::user()->paymentGenres()->get()]);
     }
 
@@ -26,7 +25,6 @@ class PaymentGenreController extends Controller
      */
     public function create()
     {
-        //
         return view('paymentGenres.create', ['paymentGenres' => Auth::user()->paymentGenres()->get()]);
     }
 

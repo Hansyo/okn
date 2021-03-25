@@ -15,7 +15,6 @@ class IncomeGenreController extends Controller
      */
     public function index()
     {
-        //
         return view('incomeGenres.index', ["items" => Auth::user()->incomeGenres()->get()]);
     }
 
@@ -26,7 +25,6 @@ class IncomeGenreController extends Controller
      */
     public function create()
     {
-        //
         return view('incomeGenres.create', ["incomeGenres" => Auth::user()->incomeGenres()->get()]);
     }
 
@@ -97,7 +95,6 @@ class IncomeGenreController extends Controller
      */
     public function destroy(IncomeGenre $incomeGenre)
     {
-        //
         if($incomeGenre->user != Auth::id()) return \App::abort(404);
         $incomeGenre->delete();
         return redirect()->route('incomeGenres.index');

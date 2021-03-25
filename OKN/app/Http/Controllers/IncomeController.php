@@ -89,7 +89,7 @@ class IncomeController extends Controller
      */
     public function edit(Income $income)
     {
-       
+
         if($income->user != Auth::id()) return \App::abort();
         $user = Auth::user();
         return view('incomes.edit', [

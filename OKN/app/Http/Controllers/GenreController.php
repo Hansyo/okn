@@ -106,7 +106,6 @@ class GenreController extends Controller
      */
     public function destroy(Genre $genre)
     {
-        //
         if($genre->user != Auth::id()) return \App::abort(404);
         $genre->delete();
         return redirect()->route('genres.index');
