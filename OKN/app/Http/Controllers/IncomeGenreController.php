@@ -38,12 +38,12 @@ class IncomeGenreController extends Controller
      */
     public function store(Request $request)
     {
-        $incomeGenre = new IncomeGenre;
+        $request->validate([
+            'name' => 'required',
+        ]);
         $user = Auth::user();
-        $incomeGenre->name = $request->name;
-        $incomeGenre->memo = $request->memo;
-        $incomeGenre->parent = $request->parent;
-        $user->incomeGenres()->save($incomeGenre);
+        if($request->filled('parent')) $user->incomeGenres()->findorFail($request->parent);
+        $incomeGenre = $user->incomeGenres()->create($request->all());
         return redirect()->route('incomeGenres.show', $incomeGenre->id);
     }
 
@@ -81,10 +81,11 @@ class IncomeGenreController extends Controller
     public function update(Request $request, IncomeGenre $incomeGenre)
     {
         if($incomeGenre->user != Auth::id()) return \App::abort(404);
-        $incomeGenre->name = $request->name;
-        $incomeGenre->memo = $request->memo;
-        $incomeGenre->parent = $request->parent;
-        $incomeGenre->save();
+        $request->validate([
+            'name' => 'required',
+        ]);
+        if($request->filled('parent')) Auth::user()->incomeGenres()->findorFail($request->parent);
+        $incomeGenre->update($request->all());
         return redirect()->route('incomeGenres.show', $incomeGenre->id);
     }
 

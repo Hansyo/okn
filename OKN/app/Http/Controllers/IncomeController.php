@@ -41,30 +41,31 @@ class IncomeController extends Controller
      */
     public function store(Request $request)
     {
-        try{
-            $income = new Income;
-            $user = Auth::user();
-            $income->amount = $request->amount;
-            $income->date = $request->date;
-            $income->payment = $request->payment;
-            $income->incomeGenre = $request->incomeGenre;
-            $user->incomes()->save($income);
-            { // CreditHistoryに登録する。
-                $hist = new CreditHistory;
-                $hist->date   = $request->date;
-                $hist->amount = $request->amount;
-                $hist->memo   = route('incomes.show', $income->id);
-                $hist->user   = Auth::id();
+        // フィールドのチェック
+        $request->validate([
+            'amount' => 'required|integer',
+            'date' => 'required|date',
+        ]);
+        $user = Auth::user();
+        // データ所持の確認
+        $user->payments()->findOrFail($request->payment);
+        if($request->filled('incomeGenre')) $user->incomeGenres()->findOrFail($request->incomeGenre);
+        $income = $user->incomes()->create($request->all());
+        { // CreditHistoryに登録する。
+            $hist = new CreditHistory;
+            $hist->date   = $request->date;
+            $hist->amount = $request->amount;
+            $hist->memo   = route('incomes.show', $income->id);
+            $hist->user   = Auth::id();
 
-                $payment = $user->payments()->findOrFail($request->payment);
-                $credit = $payment->credits()->first();
-                $credit->credit += $hist->amount;
-                $credit->save();
-                $credit->histories()->save($hist);
-                $income->creditHistory = $hist->id;
-                $income->save();
-            }
-        }catch(Exception $e) {}
+            $payment = $user->payments()->findOrFail($request->payment);
+            $credit = $payment->credits()->first();
+            $credit->credit += $hist->amount;
+            $credit->save();
+            $credit->histories()->save($hist);
+            $income->creditHistory = $hist->id;
+            $income->save();
+        }
         return redirect()->route('incomes.show', $income->id);
     }
 
@@ -108,11 +109,15 @@ class IncomeController extends Controller
     public function update(Request $request, Income $income)
     {
         if($income->user != Auth::id()) return \App::abort();
+        $request->validate([
+            'amount' => 'required|integer',
+            'date' => 'required|date',
+        ]);
         $user = Auth::user();
+        // データ所持の確認
+        if($request->filled('incomeGenre')) $user->incomeGenres()->findOrFail($request->incomeGenre);
+
         $old_amount = $income->amount;
-        $income->amount = $request->amount;
-        $income->date = $request->date;
-        $income->incomeGenre = $request->incomeGenre;
         if($old_amount != $request->amount){
             $hist = $income->history()->first();
             $credit = $hist->credits()->first();
@@ -122,7 +127,7 @@ class IncomeController extends Controller
             $credit->save();
             $hist->save();
         }
-        $income->save();
+        $income->update($request->all());
         return redirect()->route('incomes.show', $income->id);
     }
 

@@ -38,12 +38,16 @@ class PaymentController extends Controller
      */
     public function store(Request $request)
     {
-        $payment = new Payment;
         $user = Auth::user();
-        $payment->name = $request->name;
-        $payment->memo = $request->memo;
-        $payment->paymentGenre = $request->paymentGenre;
-        $user->payments()->save($payment);
+        $request->validate([
+            'name' => 'required',
+        ]);
+        // ユーザがデータを所持しているかを確認する
+        if($request->filled('paymentGenre')) {
+            $user->paymentGenres()->findOrFail($request->paymentGenre);
+        }
+
+        $payment = $user->payments()->create($request->all());
         if(! $request->filled('noCredit')) {
             $credit = new Credit;
             $credit->credit = 0;
@@ -87,10 +91,15 @@ class PaymentController extends Controller
     public function update(Request $request, Payment $payment)
     {
         if($payment->user != Auth::id()) return \App::abort(404);
-        $payment->name = $request->name;
-        $payment->memo = $request->memo;
-        $payment->paymentGenre = $request->paymentGenre;
-        $payment->save();
+        $user = Auth::user();
+        $request->validate([
+            'name' => 'required',
+        ]);
+        // ユーザがデータを所持しているかを確認する
+        if($request->filled('paymentGenre')) {
+            $user->paymentGenres()->findOrFail($request->paymentGenre);
+        }
+        $payment->update($request->all());
         return redirect()->route('payments.show', $payment->id);
     }
 

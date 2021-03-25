@@ -42,33 +42,34 @@ class ReceiptController extends Controller
      */
     public function store(Request $request)
     {
-        try {
-            $user = Auth::user();
-            $receipt = new Receipt;
-            $receipt->purchase = $request->purchase;
-            $receipt->amount   = $request->amount;
-            $receipt->memo     = $request->memo;
-            $receipt->genre    = $request->genre;
-            $receipt->store    = $request->store;
-            $receipt->payment  = $request->payment;
-            $user->receipts()->save($receipt);
-            if($request->filled('payment')){
-                $hist = new CreditHistory;
-                $hist->date   = $request->purchase;
-                $hist->amount = -1 * $request->amount;
-                $hist->memo   = route('receipts.show', $receipt->id);
-                $hist->user   = Auth::id();
+        // フィールドのチェック
+        $request->validate([
+            'purchase' => 'required|date',
+            'amount' => 'required|integer',
+        ]);
+        $user = Auth::user();
+        // ユーザがデータを所持しているかを確認する
+        if($request->filled('genre')) $user->genres()->findOrFail($request->genre);
+        if($request->filled('store')) $user->stores()->findOrFail($request->store);
+        if($request->filled('payment')) $user->payments()->findOrFail($request->payment);
 
-                $payment = $user->payments()->findOrFail($request->payment);
-                $credit = $payment->credits()->first();
-                $credit->credit += $hist->amount;
-                $credit->save();
-                $credit->histories()->save($hist);
-                $receipt->creditHistory = $hist->id;
-                $receipt->save();
-            }
+        $receipt = $user->receipts()->create($request->all());
+        if($request->filled('payment')){
+            $hist = new CreditHistory;
+            $hist->date   = $request->purchase;
+            $hist->amount = -1 * $request->amount;
+            $hist->memo   = route('receipts.show', $receipt->id);
+            $hist->user   = Auth::id();
 
-        }catch (Exception $e) { }
+            $payment = $user->payments()->findOrFail($request->payment);
+            $credit = $payment->credits()->first();
+            $credit->credit += $hist->amount;
+            $credit->save();
+            $credit->histories()->save($hist);
+            $receipt->creditHistory = $hist->id;
+            $receipt->save();
+        }
+
         return redirect()->route('receipts.show', $receipt->id);
     }
 
@@ -110,26 +111,27 @@ class ReceiptController extends Controller
     public function update(Request $request, Receipt $receipt)
     {
         if($receipt->user != Auth::id()) return \App::abort(404);
-        try {
-            $user = Auth::user();
-            $old_amount = $receipt->amount;
-            $receipt->purchase = $request->purchase;
-            $receipt->amount = $request->amount;
-            $receipt->memo = $request->memo;
-            $receipt->genre = $request->genre;
-            $receipt->store = $request->store;
-            if($receipt->payment != null && $old_amount != $request->amount){
-                $hist = $receipt->creditHistory()->first();
-                $credit = $hist->credits()->first();
-                $hist->date = $request->purchase;
-                $hist->amount = -1 * $request->amount;
-                $credit->credit += $old_amount - $request->amount;
-                $credit->save();
-                $hist->save();
-            }
-            $receipt->save();
-        }catch (Exception $e) {
+        // フィールドのチェック
+        $request->validate([
+            'purchase' => 'required|date',
+            'amount' => 'required|integer',
+        ]);
+        $user = Auth::user();
+        // ユーザがデータを所持しているかを確認する
+        if($request->filled('genre')) $user->genres()->findOrFail($request->genre);
+        if($request->filled('store')) $user->stores()->findOrFail($request->store);
+        if($request->filled('payment')) $user->payments()->findOrFail($request->payment);
+        $old_amount = $receipt->amount;
+        if($receipt->payment != null && $old_amount != $request->amount){
+            $hist = $receipt->creditHistory()->first();
+            $credit = $hist->credits()->first();
+            $hist->date = $request->purchase;
+            $hist->amount = -1 * $request->amount;
+            $credit->credit += $old_amount - $request->amount;
+            $credit->save();
+            $hist->save();
         }
+        $receipt->update($request->all());
         return redirect()->route('receipts.show', $receipt->id);
     }
 

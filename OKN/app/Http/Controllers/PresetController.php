@@ -40,15 +40,19 @@ class PresetController extends Controller
      */
     public function store(Request $request)
     {
-            $user = Auth::user();
-            $preset = new Preset;
-            $preset->name = $request->name;
-            $preset->price = $request->price;
-            $preset->memo = $request->memo;
-            $preset->genre = $request->genre;
-            $preset->store = $request->store;
-            $preset->payment = $request->payment;
-            $user->presets()->save($preset);
+        // フィールドのチェック
+        $request->validate([
+            'name' => 'required',
+        ]);
+
+        $user = Auth::user();
+        // ユーザがデータを所持しているかを確認する
+        if($request->filled('genre')) $user->genres()->findOrFail($request->genre);
+        if($request->filled('store')) $user->stores()->findOrFail($request->store);
+        if($request->filled('payment')) $user->payments()->findOrFail($request->payment);
+
+        // 保存はワンタッチでできる
+        $preset = $user->presets()->create($request->all());
         return redirect()->route('presets.show', $preset->id);
     }
 
@@ -91,14 +95,17 @@ class PresetController extends Controller
     public function update(Request $request, Preset $preset)
     {
         if($preset->user != Auth::id()) return \App::abort(404);
-        $preset->name = $request->name;
-        $preset->price = $request->price;
-        $preset->memo = $request->memo;
-        $preset->genre = $request->genre;
-        $preset->store = $request->store;
-        $preset->payment = $request->payment;
-        $preset->save();
-        return redirect()->route('presets.show', ["item" => $preset]);
+        $request->validate([
+            'name' => 'required',
+        ]);
+
+        $user = Auth::user();
+        // ユーザがデータを所持しているかを確認する
+        if($request->filled('genre')) $user->genres()->findOrFail($request->genre);
+        if($request->filled('store')) $user->stores()->findOrFail($request->store);
+        if($request->filled('payment')) $user->payments()->findOrFail($request->payment);
+        $preset->update($request->all());
+        return redirect()->route('presets.show', $preset->id);
     }
 
     /**

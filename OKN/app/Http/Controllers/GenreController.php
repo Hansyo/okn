@@ -38,12 +38,15 @@ class GenreController extends Controller
      */
     public function store(Request $request)
     {
-        $genre = new Genre;
+        // フィールドのチェック
+        $request->validate([
+            'name' => 'required',
+        ]);
+
         $user = Auth::user();
-        $genre->name = $request->name;
-        $genre->memo = $request->memo;
-        $genre->parent = $request->parent;
-        $user->genres()->save($genre);
+        // ユーザがデータを所持しているかを確認する
+        if($request->filled('parent')) $user->genres()->findOrFail($request->parent);
+        $genre = $user->genres()->create($request->all());
         return redirect()->route('genres.show', $genre->id);
     }
 
@@ -80,12 +83,18 @@ class GenreController extends Controller
      */
     public function update(Request $request, Genre $genre)
     {
-        // 処理が間違ってる
+        // 正規ユーザーか確認
         if($genre->user != Auth::id()) return \App::abort(404);
-        $genre->name = $request->name;
-        $genre->memo = $request->memo;
-        $genre->parent = $request->parent;
-        $genre->save();
+
+        // フィールドのチェック
+        $validated = $request->validate([
+            'name' => 'required',
+        ]);
+
+        // ユーザがデータを所持しているかを確認する
+        if($request->filled('parent')) Auth::user()->genres()->findorFail($request->parent);
+        // ワンラインアップデート
+        $genre->update($request->all());
         return redirect()->route('genres.show', $genre->id);
     }
 
