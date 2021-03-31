@@ -1,13 +1,19 @@
 @extends('base')
 
 @section('main-section')
-<section class="bl-main-section bl-announceUnit">
-    <h2>アナウンス</h2>
+<section class="bl-mainSection bl-mainSection--colorMain">
+    <h2 class="bl-mainSection-title">アナウンス</h2>
+    <div class="bl-mainSection-content bl-announceUnit">
+    </div>
 </section>
-<section class="bl-main-section bl-reportUnit">
-    <h2>今月の支出</h2>
+<section class="bl-mainSection">
+    <h2 class="bl-mainSection-title">今月の支出</h2>
+    <div class="bl-mainSection-content bl-reportUnit">
+    </div>
 </section>
-<section class="bl-main-section bl-historyUnit">
-    <h2>最近の履歴</h2>
+<section class="bl-mainSection">
+    <h2 class="bl-mainSection-title">最近の履歴</h2>
+    <div class="bl-mainSection-content bl-historyUnit">
+    </div>
 </section>
 @endsection

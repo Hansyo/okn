@@ -19,6 +19,9 @@ html {
     font-size: 10px;
     font-family: sans-serif;
 }
+body {
+    font-size: 1.6rem;
+}
 h1 {
     font-size: 3rem;
 }

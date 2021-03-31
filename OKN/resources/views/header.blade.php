@@ -17,7 +17,7 @@
                 <li><a href="">ログアウト</a></li>
             </ul>
         </div>
-        <button class="el-btn el-btn--accent" type="button">
+        <button class="el-btn el-btn--colorAccent" type="button">
             <a href="{{ route('receipts.create') }}">レシートを貼る</a>
         </button>
     </div>

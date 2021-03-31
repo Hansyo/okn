@@ -29,13 +29,17 @@
 .ly-body {
     background-color: var(--color-baseLight);
 }
+
 .ly-main {
     max-width: var(--width-max);
     width: 100%;
     margin: 0 auto;
 }
-.ly-main > .bl-main-section {
+.ly-main > .bl-mainSection {
     margin: 10px 20px;
+}
+.ly-main > .bl-mainSection:first-of-type {
+    margin-top: 0;
 }
 
 .ly-footer {

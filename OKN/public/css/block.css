@@ -50,23 +50,18 @@
     font-size: 1.6rem;
 }
 
-.bl-announceUnit {
+.bl-mainSection {
     padding: 10px;
     border-radius: 10px;
+    background-color: var(--color-baseDark);
+    color: var(--color-baseDark-combi);
+}
+.bl-mainSection.bl-mainSection--colorMain {
     background-color: var(--color-main);
     color: var(--color-main-combi);
 }
-
-.bl-reportUnit {
-    padding: 10px;
-    border-radius: 10px;
-    background-color: var(--color-baseDark);
-}
-
-.bl-historyUnit {
-    padding: 10px;
-    border-radius: 10px;
-    background-color: var(--color-baseDark);
+.bl-mainSection-title {
+    margin-bottom: 10px;
 }
 
 .bl-footerNavi > ul > li {
