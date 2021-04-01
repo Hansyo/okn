@@ -15,8 +15,12 @@ class CreateIncomesTable extends Migration
     {
         Schema::create('Incomes', function (Blueprint $table) {
             $table->id();
-            $table->integer('price');
+            $table->integer('amount');
             $table->date('date');
+            $table->unsignedBigInteger('payment')->nullable();
+            $table->foreign('payment')->references('id')->on('Payments')->onDelete('set null');
+            $table->unsignedBigInteger('creditHistory')->nullable();
+            $table->foreign('creditHistory')->references('id')->on('CreditHistories')->onDelete('set null');
             $table->unsignedBigInteger('incomeGenre')->nullable();
             $table->foreign('incomeGenre')->references('id')->on('IncomeGenres')->onDelete('set null');
             $table->unsignedBigInteger('user');

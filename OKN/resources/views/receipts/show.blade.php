@@ -1,5 +1,5 @@
-@extends('home')
-@section('content')
+@extends('base')
+@section('main-section')
 <div class="body-main">
     <table border="1">
     <tr><td>purchase  </td><td>{{ $item->purchase }}  </td></tr>

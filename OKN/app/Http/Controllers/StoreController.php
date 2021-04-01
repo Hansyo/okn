@@ -15,8 +15,7 @@ class StoreController extends Controller
      */
     public function index()
     {
-        //
-        return view('stores.index', ["stores" => Auth::user()->stores()->get()]);
+        return view('stores.index', ["items" => Auth::user()->stores()->get()]);
     }
 
     /**
@@ -26,7 +25,6 @@ class StoreController extends Controller
      */
     public function create()
     {
-        //
         return view('stores.create', ['stores' => Auth::user()->stores()->get() , 'genres' => Auth::user()->genres()->get()]);
     }
 
@@ -38,14 +36,16 @@ class StoreController extends Controller
      */
     public function store(Request $request)
     {
-        //
-        $store = new Store;
+        // フィールドのチェック
+        $request->validate([
+            'name' => 'required',
+        ]);
+
         $user = Auth::user();
-        $store->name = $request->name;
-        $store->memo = $request->memo;
-        $store->parent = $request->parent;
-        $store->genre = $request->genre;
-        $user->stores()->save($store);
+        // ユーザがデータを所持しているかを確認する
+        if($request->filled('parent')) $user->stores()->findOrFail($request->parent);
+        if($request->filled('genre')) $user->genres()->findOrFail($request->genre);
+        $store = $user->stores()->create($request->all());
         return redirect()->route('stores.show', $store->id);
     }
 
@@ -57,7 +57,6 @@ class StoreController extends Controller
      */
     public function show(Store $store)
     {
-        //
         if($store->user != Auth::id()) return \App::abort(404);
         return view('stores.show', ["item" => $store, "childs" => Auth::user()->stores()->where('parent', $store->id)->pluck('id')]);
     }
@@ -83,13 +82,17 @@ class StoreController extends Controller
      */
     public function update(Request $request, Store $store)
     {
-        //
         if($store->user != Auth::id()) return \App::abort(404);
-        $store->name = $request->name;
-        $store->memo = $request->memo;
-        $store->parent = $request->parent;
-        $store->genre = $request->genre;
-        $store->save();
+        // フィールドのチェック
+        $request->validate([
+            'name' => 'required',
+        ]);
+
+        $user = Auth::user();
+        // ユーザがデータを所持しているかを確認する
+        if($request->filled('parent')) $user->stores()->findOrFail($request->parent);
+        if($request->filled('genre')) $user->genres()->findOrFail($request->genre);
+        $store->update($request->all());
         return redirect()->route('stores.show', $store->id);
     }
 

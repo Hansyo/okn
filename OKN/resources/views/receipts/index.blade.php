@@ -1,5 +1,5 @@
-@extends('home')
-@section('content')
+@extends('base')
+@section('main-section')
 <div class="body-main">
     <table border="1">
     <tr><th>買い物日</th><th>ジャンル</th><th>メモ</th></tr>

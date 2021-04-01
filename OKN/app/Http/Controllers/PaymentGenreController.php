@@ -15,7 +15,6 @@ class PaymentGenreController extends Controller
      */
     public function index()
     {
-        //
         return view('paymentGenres.index', ["items" => Auth::user()->paymentGenres()->get()]);
     }
 
@@ -26,7 +25,6 @@ class PaymentGenreController extends Controller
      */
     public function create()
     {
-        //
         return view('paymentGenres.create', ['paymentGenres' => Auth::user()->paymentGenres()->get()]);
     }
 
@@ -38,12 +36,15 @@ class PaymentGenreController extends Controller
      */
     public function store(Request $request)
     {
-        $paymentGenre = new PaymentGenre;
+        // フィールドのチェック
+        $request->validate([
+            'name' => 'required',
+        ]);
+
         $user = Auth::user();
-        $paymentGenre->name = $request->name;
-        $paymentGenre->memo = $request->memo;
-        $paymentGenre->parent = $request->parent;
-        $user->paymentGenres()->save($paymentGenre);
+        // ユーザがデータを所持しているかを確認する
+        if($request->filled('parent')) $user->paymentGenres()->findOrFail($request->parent);
+        $paymentGenre = $user->paymentGenres()->create($request->all());
         return redirect()->route('paymentGenres.show', $paymentGenre->id);
     }
 
@@ -82,10 +83,15 @@ class PaymentGenreController extends Controller
     {
         // なりすまし防止
         if($paymentGenre->user != Auth::id()) return \App::abort(404);
-        $paymentGenre->name = $request->name;
-        $paymentGenre->memo = $request->memo;
-        $paymentGenre->parent = $request->parent;
-        $paymentGenre->save();
+        // フィールドのチェック
+        $request->validate([
+            'name' => 'required',
+        ]);
+
+        $user = Auth::user();
+        // ユーザがデータを所持しているかを確認する
+        if($request->filled('parent')) $user->paymentGenres()->findOrFail($request->parent);
+        $paymentGenre->update($request->all());
         return redirect()->route('paymentGenres.show', $paymentGenre->id);
     }
 
