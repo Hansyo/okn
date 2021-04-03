@@ -5,9 +5,9 @@
         </h1>
         <nav class="bl-globalNavi">
             <ul class="bl-globalNavi-body">
-                <li><a href="{{ route('home') }}">ホーム</a></li>
-                <li><a href="{{ route('book') }}">家計簿</a></li>
-                <li><a href="{{ route('report')}}">家計レポート</a></li>
+                <li class="bl-globalNavi-item @if(Request::routeIs('home')) is-current @endif"><a href="{{ route('home') }}"><div>ホーム</div></a></li>
+                <li class="bl-globalNavi-item @if(Request::routeIs('book')) is-current @endif"><a href="{{ route('book') }}"><div>家計簿</div></a></li>
+                <li class="bl-globalNavi-item @if(Request::routeIs('report')) is-current @endif"><a href="{{ route('report')}}"><div>家計レポート</div></a></li>
             </ul>
         </nav>
         <div class="bl-accountMenu">

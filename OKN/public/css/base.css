@@ -17,10 +17,11 @@
    相対的な指定によりレスポンシブ対応が可能 */
 html {
     font-size: 10px;
-    font-family: sans-serif;
 }
 body {
+    color: var(--color-baseLight-combi);
     font-size: 1.6rem;
+    font-family: sans-serif;
 }
 h1 {
     font-size: 3rem;
