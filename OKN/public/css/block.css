@@ -1,5 +1,31 @@
 @charset "utf-8";
 
+.bl-table > thead {
+    background-color: var(--color-main);
+}
+.bl-table > thead > tr > th {
+    min-width: 120px;
+    padding: 8px;
+    color: var(--color-main-combi);
+}
+.bl-table > tbody > tr {
+    border-bottom: 1px solid var(--color-main);
+}
+.bl-table > tbody > tr:first-of-type {
+    border-top: 1px solid var(--color-main);
+}
+.bl-table > tbody > tr > td {
+    padding: 8px;
+}
+
+.bl-fieldset {
+    display: grid;
+    grid-template-columns: 80px 160px;
+}
+.bl-fieldset > label {
+    height: 25px;
+}
+
 .bl-globalNavi > ul {
     display: flex;
     height: 100%;
@@ -62,6 +88,22 @@
 }
 .bl-mainSection-title {
     margin-bottom: 10px;
+}
+
+.bl-receiptUnit .el-btn {
+    margin-top: 10px;
+}
+
+.bl-receiptShowUnit .el-btn {
+    margin-top: 10px;
+}
+
+.bl-receiptCreateUnit .el-btn {
+    margin-top: 10px;
+}
+
+.bl-receiptEditUnit .el-btn {
+    margin-top: 10px;
 }
 
 .bl-footerNavi > ul > li {
