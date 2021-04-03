@@ -11,6 +11,7 @@
     --color-main-combi:      #fafafa;
     --color-accent:          #bf495a;
     --color-accent-combi:    #fafafa;
+    --color-border:          #d3d3d3;
 }
 
 /* フォントサイズは，rem単位によってルート要素からの相対的な長さを指定する

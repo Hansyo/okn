@@ -67,20 +67,28 @@
     width: 40px;
     height: 40px;
 }
-.bl-accountMenu > ul {
-    display: none;
-}
-.bl-accountMenu:hover > ul {
+.bl-accountMenu:hover .bl-accountMenu-body {
     display: flex;
+}
+.bl-accountMenu-body {
+    display: none;
     flex-direction: column;
     position: absolute;
     top: 100%;
     right: 0;
-    width: 100px;
-    padding: 10px;
+    width: 180px;
+    padding: 0 2px;
+    border: 2px solid var(--color-border);
     background-color: var(--color-baseLight);
 }
-.bl-accountMenu:hover > ul > li {
+.bl-accountMenu-body > .el-btn {
+    width: 70%;
+    margin: 6px auto;
+    text-align: center;
+}
+.bl-accountMenu-item {
+    padding: 6px;
+    border-bottom: 2px solid var(--color-border);
     font-size: 1.6rem;
 }
 

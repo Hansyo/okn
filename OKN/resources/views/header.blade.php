@@ -13,8 +13,14 @@
         <div class="bl-accountMenu">
             <img class="bl-accountMenu-avatar" src="{{ asset('/img/avatar.png') }}" alt="アカウントメニュー">
             <ul class="bl-accountMenu-body">
-                <li><a href="">設定</a></li>
-                <li><a href="">ログアウト</a></li>
+                <li class="bl-accountMenu-item"><a href="{{ route('genres.index') }}">ジャンル</a></li>
+                <li class="bl-accountMenu-item"><a href="{{ route('payments.index') }}">支払い方法</a></li>
+                <li class="bl-accountMenu-item"><a href="{{ route('paymentGenres.index') }}">支払い方法ジャンル</a></li>
+                <li class="bl-accountMenu-item"><a href="{{ route('incomes.index') }}">収入</a></li>
+                <li class="bl-accountMenu-item"><a href="{{ route('incomeGenres.index') }}">収入ジャンル</a></li>
+                <li class="bl-accountMenu-item"><a href="{{ route('stores.index') }}">店舗</a></li>
+                <li class="bl-accountMenu-item"><a href="{{ route('presets.index') }}">プリセット</a></li>
+                <button class="el-btn el-btn--colorAccent"><a href="">ログアウト</a></button>
             </ul>
         </div>
         <button class="el-btn el-btn--colorAccent" type="button">
