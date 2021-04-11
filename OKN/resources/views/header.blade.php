@@ -20,10 +20,12 @@
                 <li class="bl-accountMenu-item"><a href="{{ route('incomeGenres.index') }}">収入ジャンル</a></li>
                 <li class="bl-accountMenu-item"><a href="{{ route('stores.index') }}">店舗</a></li>
                 <li class="bl-accountMenu-item"><a href="{{ route('presets.index') }}">プリセット</a></li>
-                <button class="el-btn el-btn--colorAccent"><a href="">ログアウト</a></button>
+                <form name="logout" method="POST" action="{{ route('logout') }}"> @csrf </form>
+                <button class="el-btn el-btn--colorAccent" onclick="document.logout.submit();">ログアウト</button>
             </ul>
         </div>
         <button class="el-btn el-btn--colorAccent" type="button">
+
             <a href="{{ route('receipts.create') }}">レシートを貼る</a>
         </button>
     </div>

@@ -81,7 +81,7 @@
     border: 2px solid var(--color-border);
     background-color: var(--color-baseLight);
 }
-.bl-accountMenu-body > .el-btn {
+.bl-accountMenu-body .el-btn {
     width: 70%;
     margin: 6px auto;
     text-align: center;
