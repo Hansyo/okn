@@ -15,7 +15,7 @@ class PaymentGenreController extends Controller
      */
     public function index()
     {
-        //
+        return view('paymentGenres.index', ["items" => Auth::user()->paymentGenres()->get()]);
     }
 
     /**
@@ -25,8 +25,7 @@ class PaymentGenreController extends Controller
      */
     public function create()
     {
-        //
-        return view('paymentGenres.create');
+        return view('paymentGenres.create', ['paymentGenres' => Auth::user()->paymentGenres()->get()]);
     }
 
     /**
@@ -37,18 +36,16 @@ class PaymentGenreController extends Controller
      */
     public function store(Request $request)
     {
-        $paymentGenre = new PaymentGenre;
+        // フィールドのチェック
+        $request->validate([
+            'name' => 'required',
+        ]);
+
         $user = Auth::user();
-        $paymentGenre->name = $request->name;
-        $paymentGenre->memo = $request->memo;
-        $user->paymentGenre()->save($paymentGenre);
-        if($request->filled('parent')) {
-            try{
-                $parent = $user->paymentGenre()->findOrFail($request->parent);
-                $parent->child()->attach($paymentGenre->id);
-            }catch(ModelNotFoundException $e){}
-        }
-        return redirect('paymentGenres/'.$paymentGenre->id);
+        // ユーザがデータを所持しているかを確認する
+        if($request->filled('parent')) $user->paymentGenres()->findOrFail($request->parent);
+        $paymentGenre = $user->paymentGenres()->create($request->all());
+        return redirect()->route('paymentGenres.show', $paymentGenre->id);
     }
 
     /**
@@ -59,7 +56,8 @@ class PaymentGenreController extends Controller
      */
     public function show(PaymentGenre $paymentGenre)
     {
-        //
+        if($paymentGenre->user != Auth::id()) return \App::abort(404);
+        return view('paymentGenres.show', ["item" => $paymentGenre, "childs" => Auth::user()->paymentGenres()->where('parent', $paymentGenre->id)->pluck('id')]);
     }
 
     /**
@@ -70,8 +68,8 @@ class PaymentGenreController extends Controller
      */
     public function edit(PaymentGenre $paymentGenre)
     {
-        //
-        return view('paymentGenres.edit');
+        if($paymentGenre->user != Auth::id()) return \App::abort(404);
+        return view('paymentGenres.edit', ["item" => $paymentGenre, "paymentGenres" => Auth::user()->paymentGenres()->get()]);
     }
 
     /**
@@ -83,17 +81,18 @@ class PaymentGenreController extends Controller
      */
     public function update(Request $request, PaymentGenre $paymentGenre)
     {
+        // なりすまし防止
+        if($paymentGenre->user != Auth::id()) return \App::abort(404);
+        // フィールドのチェック
+        $request->validate([
+            'name' => 'required',
+        ]);
+
         $user = Auth::user();
-        $paymentGenre->name = $request->name;
-        $paymentGenre->memo = $request->memo;
-        if($request->filled('parent')) {
-            try{
-                $parent = $user->paymentGenre()->findOrFail($request->parent);
-                $parent->child()->attach($paymentGenre->id);
-            }catch(ModelNotFoundException $e){}
-        }
-        $paymentGenre->save();
-        return redirect('paymentGenres/'.$paymentGenre->id);
+        // ユーザがデータを所持しているかを確認する
+        if($request->filled('parent')) $user->paymentGenres()->findOrFail($request->parent);
+        $paymentGenre->update($request->all());
+        return redirect()->route('paymentGenres.show', $paymentGenre->id);
     }
 
     /**
@@ -104,6 +103,10 @@ class PaymentGenreController extends Controller
      */
     public function destroy(PaymentGenre $paymentGenre)
     {
+        // なりすまし防止
+        if($paymentGenre->user != Auth::id()) return \App::abort(404);
         $paymentGenre->delete();
+        return redirect()->route('paymentGenres.index');
     }
+
 }

@@ -17,10 +17,7 @@ class GenreController extends Controller
      */
     public function index()
     {
-        //
-        //return view('genres.index', ['genres' => Genre::all()]);
-        if(!Auth::check()) return redirect('login'); //確認
-        return view('genres.index', ["genres" => Auth::user()->genres()->get()]);
+        return view('genres.index', ["items" => Auth::user()->genres()->get()]);
     }
 
     /**
@@ -30,7 +27,6 @@ class GenreController extends Controller
      */
     public function create()
     {
-        if(!Auth::check()) return redirect('login'); //確認
         return view('genres.create', ['genres' => Auth::user()->genres()->get() ]);
     }
 
@@ -42,12 +38,15 @@ class GenreController extends Controller
      */
     public function store(Request $request)
     {
-        $genre = new Genre;
+        // フィールドのチェック
+        $request->validate([
+            'name' => 'required',
+        ]);
+
         $user = Auth::user();
-        $genre->name = $request->name;
-        $genre->memo = $request->memo;
-        $genre->parent = $request->parent;
-        $user->genres()->save($genre);
+        // ユーザがデータを所持しているかを確認する
+        if($request->filled('parent')) $user->genres()->findOrFail($request->parent);
+        $genre = $user->genres()->create($request->all());
         return redirect()->route('genres.show', $genre->id);
     }
 
@@ -59,12 +58,8 @@ class GenreController extends Controller
      */
     public function show(Genre $genre)
     {
-        //
-        if(!Auth::check()) return \App::abort(404);
-        $user = Auth::user();
-        if(! $user->genres()->where('id', '=', $genre->id)->exists())
-            return \App::abort(404);
-        return view('genres.show', ["genre" => $genre, "childs" => $user->genres()->where('parent', $genre->id)->pluck('id')]);
+        if($genre->user != Auth::id()) return \App::abort(404);
+        return view('genres.show', ["item" => $genre, "childs" => Auth::user()->genres()->where('parent', $genre->id)->pluck('id')]);
     }
 
     /**
@@ -75,7 +70,8 @@ class GenreController extends Controller
      */
     public function edit(Genre $genre)
     {
-        return view('genres.edit', ["genre" => $genre, "genres" => Auth::user()->genres()->get()]);
+        if($genre->user != Auth::id()) return \App::abort(404);
+        return view('genres.edit', ["item" => $genre, "genres" => Auth::user()->genres()->get()]);
     }
 
     /**
@@ -87,18 +83,19 @@ class GenreController extends Controller
      */
     public function update(Request $request, Genre $genre)
     {
-        // 処理が間違ってる
-        $genre->name = $request->name;
-        $genre->memo = $request->memo;
-        if($request->filled('parent')) {
-            try{
-                $user = Auth::user();
-                $parent = $user->genres()->findOrFail($request->parent);
-                $parent->child()->attach($genre->id);
-            }catch(ModelNotFoundException $e){}
-        }
-        $genre->save();
-        return redirect('genres/'.$genre->id);
+        // 正規ユーザーか確認
+        if($genre->user != Auth::id()) return \App::abort(404);
+
+        // フィールドのチェック
+        $validated = $request->validate([
+            'name' => 'required',
+        ]);
+
+        // ユーザがデータを所持しているかを確認する
+        if($request->filled('parent')) Auth::user()->genres()->findorFail($request->parent);
+        // ワンラインアップデート
+        $genre->update($request->all());
+        return redirect()->route('genres.show', $genre->id);
     }
 
     /**
@@ -109,8 +106,8 @@ class GenreController extends Controller
      */
     public function destroy(Genre $genre)
     {
-        //
+        if($genre->user != Auth::id()) return \App::abort(404);
         $genre->delete();
-        return redirect('genres');
+        return redirect()->route('genres.index');
     }
 }

@@ -7,13 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class CreditHistory extends Model
 {
     protected $table = 'CreditHistories';
-    public function credit()
+    public function credits()
     {
-        return $this->belongsTo(Credit::class);
+        return $this->belongsTo(Credit::class, 'credit');
     }
 
     public function receipt(){
-        return $this->belongsTo(Receipt::class);
+        return $this->hasOne(Receipt::class, 'creditHistory');
     }
 
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Payment;
+use App\Models\Credit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,7 +16,7 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        //
+        return view('payments.index', ["items" => Auth::user()->payments()->get()]);
     }
 
     /**
@@ -25,7 +26,7 @@ class PaymentController extends Controller
      */
     public function create()
     {
-        return view('payments.create');
+        return view('payments.create', ['paymentGenres' => Auth::user()->paymentGenres()->get()]);
     }
 
     /**
@@ -36,20 +37,23 @@ class PaymentController extends Controller
      */
     public function store(Request $request)
     {
-        try{
-            $payment = new Payment;
-            $user = Auth::user();
-            $payment->name = $request->name;
-            if($request->filled('paymentGenre_id'))
-                $payment->paymentGenre_id = $user->PaymentGenre()->findOrFail($request->paymentGenre_id)->id;
-            $payment->memo = $request->memo;
-            $user->payment()->save($payment);
-            if($request->filled('parent')) {
-                $parent = $user->payment()->findOrFail($request->parent);
-                $parent->child()->attach($payment->id);
-            }
-        }catch(Exception $e){}
-        return redirect('payments/'.$payment->id);
+        $user = Auth::user();
+        $request->validate([
+            'name' => 'required',
+        ]);
+        // ユーザがデータを所持しているかを確認する
+        if($request->filled('paymentGenre')) {
+            $user->paymentGenres()->findOrFail($request->paymentGenre);
+        }
+
+        $payment = $user->payments()->create($request->all());
+        if(! $request->filled('noCredit')) {
+            $credit = new Credit;
+            $credit->credit = 0;
+            $credit->user = Auth::id();
+            $payment->credits()->save($credit);
+        }
+        return redirect()->route('payments.show', $payment->id);
     }
 
     /**
@@ -60,8 +64,8 @@ class PaymentController extends Controller
      */
     public function show(Payment $payment)
     {
-        //
-        return ["payment" => $payment];
+        if($payment->user != Auth::id()) return \App::abort(404);
+        return view('payments.show', ["item" => $payment, "credit" => $payment->credits()->first()]);
     }
 
     /**
@@ -72,7 +76,8 @@ class PaymentController extends Controller
      */
     public function edit(Payment $payment)
     {
-        return view('payments.edit');
+        if($payment->user != Auth::id()) return \App::abort(404);
+        return view('payments.edit', ["item" => $payment, "paymentGenres" => Auth::user()->paymentGenres()->get()]);
     }
 
     /**
@@ -84,20 +89,17 @@ class PaymentController extends Controller
      */
     public function update(Request $request, Payment $payment)
     {
-        //
-        try{
-            $payment = new Payment;
-            $payment->name = $request->name;
-            if($request->filled('paymentGenre_id'))
-                $payment->paymentGenre_id = $user->PaymentGenre()->findOrFail($request->paymentGenre_id)->id;
-            $payment->memo = $request->memo;
-            if($request->filled('parent')) {
-                $parent = $user->payment()->findOrFail($request->parent);
-                $parent->child()->attach($payment->id);
-            }
-            $payment->save();
-        }catch(Exception $e){}
-        return redirect('payments/'.$payment->id);
+        if($payment->user != Auth::id()) return \App::abort(404);
+        $user = Auth::user();
+        $request->validate([
+            'name' => 'required',
+        ]);
+        // ユーザがデータを所持しているかを確認する
+        if($request->filled('paymentGenre')) {
+            $user->paymentGenres()->findOrFail($request->paymentGenre);
+        }
+        $payment->update($request->all());
+        return redirect()->route('payments.show', $payment->id);
     }
 
     /**
@@ -108,7 +110,8 @@ class PaymentController extends Controller
      */
     public function destroy(Payment $payment)
     {
-        //
+        if($payment->user != Auth::id()) return \App::abort(404);
         $payment->delete();
+        return redirect()->route('payments.index');
     }
 }

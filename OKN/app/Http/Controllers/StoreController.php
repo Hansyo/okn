@@ -15,7 +15,7 @@ class StoreController extends Controller
      */
     public function index()
     {
-        //
+        return view('stores.index', ["items" => Auth::user()->stores()->get()]);
     }
 
     /**
@@ -25,8 +25,7 @@ class StoreController extends Controller
      */
     public function create()
     {
-        //
-        return view('store.create');
+        return view('stores.create', ['stores' => Auth::user()->stores()->get() , 'genres' => Auth::user()->genres()->get()]);
     }
 
     /**
@@ -37,19 +36,17 @@ class StoreController extends Controller
      */
     public function store(Request $request)
     {
-        //
-        $store = new Store;
+        // フィールドのチェック
+        $request->validate([
+            'name' => 'required',
+        ]);
+
         $user = Auth::user();
-        $store->name = $request->name;
-        $store->memo = $request->memo;
-        $user->store()->save($store);
-        if($request->filled('parent')) {
-            try{
-                $parent = $user->store()->findOrFail($request->parent);
-                $parent->child()->attach($store->id);
-            }catch(ModelNotFoundException $e){}
-        }
-        return redirect('stores/'.$store->id);
+        // ユーザがデータを所持しているかを確認する
+        if($request->filled('parent')) $user->stores()->findOrFail($request->parent);
+        if($request->filled('genre')) $user->genres()->findOrFail($request->genre);
+        $store = $user->stores()->create($request->all());
+        return redirect()->route('stores.show', $store->id);
     }
 
     /**
@@ -60,7 +57,8 @@ class StoreController extends Controller
      */
     public function show(Store $store)
     {
-        //
+        if($store->user != Auth::id()) return \App::abort(404);
+        return view('stores.show', ["item" => $store, "childs" => Auth::user()->stores()->where('parent', $store->id)->pluck('id')]);
     }
 
     /**
@@ -71,7 +69,8 @@ class StoreController extends Controller
      */
     public function edit(Store $store)
     {
-        return view('store.edit', ["store" => $store]);
+        if($store->user != Auth::id()) return \App::abort(404);
+        return view('stores.edit', ["item" => $store, "stores" => Auth::user()->stores()->get(), "genres" => Auth::user()->genres()->get()]);
     }
 
     /**
@@ -83,17 +82,18 @@ class StoreController extends Controller
      */
     public function update(Request $request, Store $store)
     {
-        //
-        $store->name = $request->name;
-        $store->memo = $request->memo;
-        if($request->filled('parent')) {
-            try{
-                $parent = $user->store()->findOrFail($request->parent);
-                $parent->child()->attach($store->id);
-            }catch(ModelNotFoundException $e){}
-        }
-        $store->save();
-        return redirect('stores/'.$store->id);
+        if($store->user != Auth::id()) return \App::abort(404);
+        // フィールドのチェック
+        $request->validate([
+            'name' => 'required',
+        ]);
+
+        $user = Auth::user();
+        // ユーザがデータを所持しているかを確認する
+        if($request->filled('parent')) $user->stores()->findOrFail($request->parent);
+        if($request->filled('genre')) $user->genres()->findOrFail($request->genre);
+        $store->update($request->all());
+        return redirect()->route('stores.show', $store->id);
     }
 
     /**
@@ -104,6 +104,8 @@ class StoreController extends Controller
      */
     public function destroy(Store $store)
     {
+        if($store->user != Auth::id()) return \App::abort(404);
         $store->delete();
+        return redirect()->route('stores.index');
     }
 }

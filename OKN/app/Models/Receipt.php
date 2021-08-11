@@ -12,22 +12,22 @@ class Receipt extends Model
 
     public function genre()
     {
-        return $this->belongsTo(Genre::class);
+        return $this->belongsTo(Genre::class, 'genre');
     }
     public function store()
     {
-        return $this->belongsTo(Store::class);
+        return $this->belongsTo(Store::class, 'store');
     }
     public function payment()
     {
-        return $this->belongsTo(Payment::class);
+        return $this->belongsTo(Payment::class, 'payment');
     }
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user');
     }
     public function creditHistory()
     {
-        return $this->hasOne(CreditHistory::class);
+        return $this->belongsTo(CreditHistory::class, 'creditHistory');
     }
 }

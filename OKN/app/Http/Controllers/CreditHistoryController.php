@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CreditHistory;
 use App\Models\Credit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CreditHistoryController extends Controller
 {
@@ -15,7 +16,7 @@ class CreditHistoryController extends Controller
      */
     public function index()
     {
-        //
+        return view('creditHistories.index', ["items" => Auth::user()->creditHistories()->get()]);
     }
 
     /**
@@ -25,7 +26,8 @@ class CreditHistoryController extends Controller
      */
     public function create()
     {
-        return view('creditHistories.create');
+        return \App::abor(404);
+        //return view('creditHistories.create');
     }
 
     /**
@@ -60,8 +62,8 @@ class CreditHistoryController extends Controller
      */
     public function show(CreditHistory $creditHistory)
     {
-        //
-        return ['creditHistory' => $CreditHistory];
+        if($creditHistory->user != Auth::id()) return \App::abort(404);
+        return view('creditHistories.show', ['item' => $creditHistory]);
     }
 
     /**
@@ -72,8 +74,9 @@ class CreditHistoryController extends Controller
      */
     public function edit(CreditHistory $creditHistory)
     {
-        //
-        return view('creditHistories.edit', ['creditHistory' => $creditHistory]);
+        return \App::abort(404);
+        //if($creditHistory->user != Auth::id()) return \App::abort(404);
+        //return view('creditHistories.edit', ['creditHistory' => $creditHistory]);
     }
 
     /**
@@ -85,7 +88,7 @@ class CreditHistoryController extends Controller
      */
     public function update(Request $request, CreditHistory $creditHistory)
     {
-        //
+        if($creditHistory->user != Auth::id()) return \App::abort(404);
         try{
             $creditHistory = new CreditHistory;
             $credit = Credit::findOrFail($request->credit_id);
@@ -113,7 +116,9 @@ class CreditHistoryController extends Controller
      */
     public function destroy(CreditHistory $creditHistory)
     {
-        //
+        return \App::abort(404);
+        if($creditHistory->user != Auth::id()) return \App::abort(404);
         $creditHistory->delete();
+        return redirect()->route('creditHistories.index');
     }
 }

@@ -15,7 +15,7 @@ class PresetController extends Controller
      */
     public function index()
     {
-        //
+        return view('presets.index', ["items" => Auth::user()->presets()->get()]);
     }
 
     /**
@@ -25,7 +25,11 @@ class PresetController extends Controller
      */
     public function create()
     {
-        return view('receipts.create');
+        return view('presets.create', [
+            "genres" => Auth::user()->genres()->get(),
+            "stores" => Auth::user()->stores()->get(),
+            "payments" => Auth::user()->payments()->get(),
+            ]);
     }
 
     /**
@@ -36,19 +40,20 @@ class PresetController extends Controller
      */
     public function store(Request $request)
     {
-        try {
-            $user = Auth::user();
-            $receipt = new Receipt;
-            $receipt->name = $request->name;
-            $receipt->price = $request->price;
-            $receipt->memo = $request->memo;
-            if($request->filled('genre_id'))$receipt->genre_id = $user->genre()->findOrFail($request->genre_id)->id;
-            if($request->filled('store_id')) $receipt->store_id = $user->store()->findOrFail($request->store_id)->id;
-            if($request->filled('payment_id')) $receipt->payment_id = $user->payment()->findOrFail($request->payment_id)->id;
-            $user->receipt()->save($receipt);
-        }catch (Exception $e) {
-        }
-        return redirect('receipts/'.$receipt->id);
+        // フィールドのチェック
+        $request->validate([
+            'name' => 'required',
+        ]);
+
+        $user = Auth::user();
+        // ユーザがデータを所持しているかを確認する
+        if($request->filled('genre')) $user->genres()->findOrFail($request->genre);
+        if($request->filled('store')) $user->stores()->findOrFail($request->store);
+        if($request->filled('payment')) $user->payments()->findOrFail($request->payment);
+
+        // 保存はワンタッチでできる
+        $preset = $user->presets()->create($request->all());
+        return redirect()->route('presets.show', $preset->id);
     }
 
     /**
@@ -59,7 +64,8 @@ class PresetController extends Controller
      */
     public function show(Preset $preset)
     {
-        //
+        if($preset->user != Auth::id()) return \App::abort(404);
+        return view('presets.show', ["item" => $preset]);
     }
 
     /**
@@ -70,8 +76,13 @@ class PresetController extends Controller
      */
     public function edit(Preset $preset)
     {
-        //
-        return view('receipts.create');
+        if($preset->user != Auth::id()) return \App::abort(404);
+        return view('presets.edit', [
+            "item" => $preset,
+            "genres" => Auth::user()->genres()->get(),
+            "stores" => Auth::user()->stores()->get(),
+            "payments" => Auth::user()->payments()->get(),
+        ]);
     }
 
     /**
@@ -83,20 +94,18 @@ class PresetController extends Controller
      */
     public function update(Request $request, Preset $preset)
     {
-        //
-        try {
-            $user = Auth::user();
-            $receipt = new Receipt;
-            $receipt->name = $request->name;
-            $receipt->price = $request->price;
-            $receipt->memo = $request->memo;
-            if($request->filled('genre_id'))$receipt->genre_id = $user->genre()->findOrFail($request->genre_id)->id;
-            if($request->filled('store_id')) $receipt->store_id = $user->store()->findOrFail($request->store_id)->id;
-            if($request->filled('payment_id')) $receipt->payment_id = $user->payment()->findOrFail($request->payment_id)->id;
-            $receipt->save();
-        }catch (Exception $e) {
-        }
-        return redirect('receipts/'.$receipt->id);
+        if($preset->user != Auth::id()) return \App::abort(404);
+        $request->validate([
+            'name' => 'required',
+        ]);
+
+        $user = Auth::user();
+        // ユーザがデータを所持しているかを確認する
+        if($request->filled('genre')) $user->genres()->findOrFail($request->genre);
+        if($request->filled('store')) $user->stores()->findOrFail($request->store);
+        if($request->filled('payment')) $user->payments()->findOrFail($request->payment);
+        $preset->update($request->all());
+        return redirect()->route('presets.show', $preset->id);
     }
 
     /**
@@ -107,7 +116,8 @@ class PresetController extends Controller
      */
     public function destroy(Preset $preset)
     {
-        //
+        if($preset->user != Auth::id()) return \App::abort(404);
         $preset->delete();
+        return redirect()->route('presets.index');
     }
 }

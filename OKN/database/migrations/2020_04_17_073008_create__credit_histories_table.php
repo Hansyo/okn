@@ -15,11 +15,13 @@ class CreateCreditHistoriesTable extends Migration
     {
         Schema::create('CreditHistories', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('credit_id');
-            $table->foreign('credit_id')->references('id')->on('Credits')->onDelete('cascade');
+            $table->unsignedBigInteger('credit');
+            $table->foreign('credit')->references('id')->on('Credits')->onDelete('cascade');
             $table->date('date');
             $table->integer('amount');
             $table->string('memo')->nullable();
+            $table->unsignedBigInteger('user');
+            $table->foreign('user')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
